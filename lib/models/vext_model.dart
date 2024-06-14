@@ -1,0 +1,23 @@
+// ignore_for_file: non_constant_identifier_names
+
+class VextModel {
+  String vext_id;
+  List<String> vext_owners;
+  String vext_network;
+  double vext_waterLevel;
+  bool vext_isLightOn;
+  bool vext_isCleaningModeOn;
+  String vext_plantStage;
+  List<String> vext_tasks;
+
+  VextModel(
+    this.vext_id,
+    this.vext_owners,
+    this.vext_network,
+    this.vext_waterLevel,
+    this.vext_isLightOn,
+    this.vext_isCleaningModeOn,
+    this.vext_plantStage,
+    this.vext_tasks,
+  );
+}
