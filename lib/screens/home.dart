@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vext_app/data/app_data.dart';
 import 'package:vext_app/screens/drawer_screens/membership.dart';
 import 'package:vext_app/screens/drawer_screens/profile.dart';
 import 'package:vext_app/screens/drawer_screens/settings.dart';
 import 'package:vext_app/screens/drawer_screens/support.dart';
-import 'package:vext_app/screens/lights.dart';
-import 'package:vext_app/screens/plant_guides.dart';
-import 'package:vext_app/screens/tasks.dart';
-import 'package:vext_app/screens/water.dart';
 import 'package:vext_app/styles/styles.dart';
+import 'package:vext_app/provider/vext_provider.dart';
 
-class Home extends StatefulWidget {
+class Home extends ConsumerStatefulWidget {
   const Home({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  ConsumerState<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends ConsumerState<Home> {
   //method to create listTiles inside the drawer (My profile - Setting - Membership - Support )
   Widget _drawerTile({
     required String title,
@@ -83,6 +80,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final myVext = ref.watch(vextProvider);
+
     return Scaffold(
       drawer: Drawer(
         child: ListView(
@@ -117,7 +116,7 @@ class _HomeState extends State<Home> {
             ),
             _drawerTile(
               title: 'Membership',
-              pushedTo: (context) => Membership(),
+              pushedTo: (context) => const Membership(),
             ),
             _drawerTile(
               title: 'Support',

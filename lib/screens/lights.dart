@@ -71,8 +71,9 @@ class _LightsState extends State<Lights> {
               'Aim for 14 - 16 hours of light each day',
               style: Styles.body_text.copyWith(fontWeight: FontWeight.w300),
             ),
-            Styles.height_30,
+            Styles.height_20,
             _lightsTile('Turn on at', '06:00', 'assets/sunrise.svg'),
+            Styles.height_20,
             _lightsTile('Turn off at', '22:00', 'assets/sunset.svg'),
             Styles.height_30,
             const Text(

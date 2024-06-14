@@ -1,8 +1,4 @@
-import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:thingsboard_client/thingsboard_client.dart';
 import 'package:vext_app/styles/styles.dart';
 
 class Membership extends StatefulWidget {

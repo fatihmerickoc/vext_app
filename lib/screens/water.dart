@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:vext_app/provider/vext_provider.dart';
 import 'package:vext_app/styles/styles.dart';
 
-class Water extends StatefulWidget {
+class Water extends ConsumerWidget {
   const Water({super.key});
 
-  @override
-  State<Water> createState() => _WaterState();
-}
-
-class _WaterState extends State<Water> {
   //method that builds a toggleswitch for the plantStageList (Seed - Growth - Mature)
   Widget _plantStageList() {
     return Row(
@@ -36,7 +33,11 @@ class _WaterState extends State<Water> {
   }
 
   //method that produces boxes for different ingredients such as Water, Vitamin A and Vitamin B
-  Widget _statusBox(int flex, Color color, String title, value) {
+  Widget _statusBox(
+      {required int flex,
+      required Color color,
+      required String title,
+      required double value}) {
     return Expanded(
       flex: flex,
       child: Stack(
@@ -61,7 +62,7 @@ class _WaterState extends State<Water> {
             ),
           ),
           Container(
-            height: 150, //this value will change based on the amount of water
+            height: value, //this value will change based on the amount of water
             decoration: BoxDecoration(
               color: color,
               borderRadius: const BorderRadius.only(
@@ -73,7 +74,7 @@ class _WaterState extends State<Water> {
               alignment: Alignment.bottomCenter,
               margin: const EdgeInsets.all(15.0),
               child: Text(
-                value,
+                value.toString(),
                 textAlign: TextAlign.center,
                 style: Styles.title_text.copyWith(
                   fontWeight: FontWeight.w500,
@@ -88,7 +89,8 @@ class _WaterState extends State<Water> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final myVext = ref.watch(vextProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -109,11 +111,26 @@ class _WaterState extends State<Water> {
               ),
               child: Row(
                 children: [
-                  _statusBox(2, Styles.lightBlue, 'Water', '2.5L'),
+                  _statusBox(
+                    title: 'Water',
+                    value: myVext.vext_waterLevel,
+                    color: Styles.lightBlue,
+                    flex: 2,
+                  ),
                   Styles.width_5,
-                  _statusBox(1, Styles.muddyGreen, 'A', '46%'),
+                  _statusBox(
+                    title: 'A',
+                    value: 140,
+                    color: Styles.muddyGreen,
+                    flex: 1,
+                  ),
                   Styles.width_5,
-                  _statusBox(1, Styles.orange, 'B', '55%'),
+                  _statusBox(
+                    title: 'B',
+                    value: 230,
+                    color: Styles.orange,
+                    flex: 1,
+                  ),
                 ],
               ),
             ),
