@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-import 'package:vext_app/provider/vext_provider.dart';
+import 'package:vext_app/provider/vext_notifier.dart';
 import 'package:vext_app/styles/styles.dart';
 
-class Water extends ConsumerWidget {
+class Water extends ConsumerStatefulWidget {
   const Water({super.key});
 
+  @override
+  ConsumerState<Water> createState() => _WaterState();
+}
+
+class _WaterState extends ConsumerState<Water> {
   //method that builds a toggleswitch for the plantStageList (Seed - Growth - Mature)
   Widget _plantStageList() {
     return Row(
@@ -37,7 +42,7 @@ class Water extends ConsumerWidget {
       {required int flex,
       required Color color,
       required String title,
-      required double value}) {
+      required int value}) {
     return Expanded(
       flex: flex,
       child: Stack(
@@ -62,7 +67,7 @@ class Water extends ConsumerWidget {
             ),
           ),
           Container(
-            height: value, //this value will change based on the amount of water
+            height: value.toDouble(),
             decoration: BoxDecoration(
               color: color,
               borderRadius: const BorderRadius.only(
@@ -89,8 +94,8 @@ class Water extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final myVext = ref.watch(vextProvider);
+  Widget build(BuildContext context) {
+    final updatedVext = ref.watch(vextNotifierProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -113,7 +118,7 @@ class Water extends ConsumerWidget {
                 children: [
                   _statusBox(
                     title: 'Water',
-                    value: myVext.vext_waterLevel,
+                    value: updatedVext.vext_waterLevel,
                     color: Styles.lightBlue,
                     flex: 2,
                   ),

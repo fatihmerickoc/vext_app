@@ -6,7 +6,7 @@ VextModel myVext = VextModel(
   "",
   [],
   "vext_network",
-  25.0,
+  100,
   false,
   false,
   'vext_plantStage',

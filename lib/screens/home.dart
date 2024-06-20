@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vext_app/data/app_data.dart';
+import 'package:vext_app/models/vext_model.dart';
+import 'package:vext_app/provider/vext_notifier.dart';
 import 'package:vext_app/screens/drawer_screens/membership.dart';
 import 'package:vext_app/screens/drawer_screens/profile.dart';
 import 'package:vext_app/screens/drawer_screens/settings.dart';
@@ -81,6 +83,7 @@ class _HomeState extends ConsumerState<Home> {
   @override
   Widget build(BuildContext context) {
     final myVext = ref.watch(vextProvider);
+    final updatedVext = ref.watch(vextNotifierProvider);
 
     return Scaffold(
       drawer: Drawer(
@@ -157,6 +160,7 @@ class _HomeState extends ConsumerState<Home> {
                   },
                 ),
               ),
+              Styles.height_20,
             ],
           ),
         ),

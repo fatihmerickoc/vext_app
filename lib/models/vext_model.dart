@@ -4,7 +4,7 @@ class VextModel {
   String vext_id;
   List<String> vext_owners;
   String vext_network;
-  double vext_waterLevel;
+  int vext_waterLevel;
   bool vext_isLightOn;
   bool vext_isCleaningModeOn;
   String vext_plantStage;
