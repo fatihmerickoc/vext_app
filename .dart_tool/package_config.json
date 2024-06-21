@@ -507,7 +507,7 @@
     },
     {
       "name": "thingsboard_client",
-      "rootUri": "file:///Users/fatihmerickoc/.pub-cache/hosted/pub.dev/thingsboard_client-1.2.0",
+      "rootUri": "file:///Users/fatihmerickoc/.pub-cache/hosted/pub.dev/thingsboard_client-1.2.1",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -602,7 +602,7 @@
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-06-20T11:36:55.137893Z",
+  "generated": "2024-06-21T09:28:10.211656Z",
   "generator": "pub",
   "generatorVersion": "3.4.3",
   "flutterRoot": "file:///Users/fatihmerickoc/flutter",

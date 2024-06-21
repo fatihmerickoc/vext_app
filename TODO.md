@@ -13,7 +13,7 @@ later:
 if i have nothing to do:
 -come up with text for plant guides 
 
-for future developers: me, (Fatih Koc) initially coded this project from scratch. if you ever see yourself reading this file, pls send a message on LinkedIn so I can remember the good old days...  also below down you'll find a small easter egg for you. 
+for future developers: I, (Fatih Koc) initially coded this project from scratch. if you ever see yourself reading this file, pls send a message me on LinkedIn so I can remember the good old days...  also below down you'll find a small easter egg for you. 
 
 hours spent on debugginng: 20+  
 (make sure to increase the number as you go to keep the legacy alive)

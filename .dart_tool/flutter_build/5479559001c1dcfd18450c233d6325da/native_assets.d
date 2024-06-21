@@ -1,0 +1,1 @@
+ /Users/fatihmerickoc/MyFlutterProjects/vext_app/.dart_tool/flutter_build/5479559001c1dcfd18450c233d6325da/native_assets.yaml: 

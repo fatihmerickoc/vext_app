@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vext_app/data/app_data.dart';
-import 'package:vext_app/models/vext_model.dart';
 import 'package:vext_app/provider/vext_notifier.dart';
 import 'package:vext_app/screens/drawer_screens/membership.dart';
 import 'package:vext_app/screens/drawer_screens/profile.dart';
@@ -9,6 +8,8 @@ import 'package:vext_app/screens/drawer_screens/settings.dart';
 import 'package:vext_app/screens/drawer_screens/support.dart';
 import 'package:vext_app/styles/styles.dart';
 import 'package:vext_app/provider/vext_provider.dart';
+import 'package:thingsboard_client/thingsboard_client.dart';
+import 'dart:math';
 
 class Home extends ConsumerStatefulWidget {
   const Home({super.key});
@@ -18,6 +19,92 @@ class Home extends ConsumerStatefulWidget {
 }
 
 class _HomeState extends ConsumerState<Home> {
+  static const thingsBoardApiEndpoint = 'https://thingsboard.vinicentus.net';
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch data when the widget is initialized
+    subsribeThingsboard();
+  }
+
+  //method to create subscription to get device data and telemetry updates using Entity Data Query API over WebSocket API
+  Future<void> subsribeThingsboard() async {
+    try {
+      var tbClient = ThingsboardClient(thingsBoardApiEndpoint);
+
+      await tbClient.login(LoginRequest('**************', '************'));
+
+      var deviceName = 'Black Vext';
+
+      print('TEST');
+
+      // Create entity filter to get device by its name
+      var entityFilter = EntityNameFilter(
+          entityType: EntityType.DEVICE, entityNameFilter: deviceName);
+
+      // Prepare list of queried device fields
+      var deviceFields = <EntityKey>[
+        EntityKey(type: EntityKeyType.ENTITY_FIELD, key: 'turnOffTime'),
+        EntityKey(type: EntityKeyType.ENTITY_FIELD, key: 'turnOnTime'),
+        EntityKey(type: EntityKeyType.ENTITY_FIELD, key: 'pumpOnSeconds')
+      ];
+
+      // Prepare list of queried device timeseries
+      var deviceTelemetry = <EntityKey>[
+        EntityKey(type: EntityKeyType.TIME_SERIES, key: 'waterVolume'),
+        EntityKey(type: EntityKeyType.TIME_SERIES, key: 'isDoorOpen')
+      ];
+
+      // Create entity query with provided entity filter, queried fields and page link
+      var devicesQuery = EntityDataQuery(
+        entityFilter: entityFilter,
+        entityFields: deviceFields,
+        latestValues: deviceTelemetry,
+        pageLink: EntityDataPageLink(
+          pageSize: 10,
+          sortOrder: EntityDataSortOrder(
+              key: EntityKey(
+                  type: EntityKeyType.ENTITY_FIELD, key: 'createdTime'),
+              direction: EntityDataSortOrderDirection.DESC),
+        ),
+      );
+
+      // Create timeseries subscription command to get data for 'temperature' and 'humidity' keys for last hour with realtime updates
+      var currentTime = DateTime.now().millisecondsSinceEpoch;
+      var timeWindow = const Duration(hours: 1).inMilliseconds;
+
+      var tsCmd = TimeSeriesCmd(
+          keys: ['waterVolume', 'isDoorOpen'],
+          startTs: currentTime - timeWindow,
+          timeWindow: timeWindow);
+
+      // Create subscription command with entities query and timeseries subscription
+      var cmd = EntityDataCmd(query: devicesQuery, tsCmd: tsCmd);
+
+      // Create subscription with provided subscription command
+      var telemetryService = tbClient.getTelemetryService();
+      var subscription = TelemetrySubscriber(telemetryService, [cmd]);
+
+      // Create listener to get data updates from WebSocket
+      subscription.entityDataStream.listen((entityDataUpdate) {
+        print('Received entity data update: $entityDataUpdate');
+      });
+
+      // Perform subscribe (send subscription command via WebSocket API and listen for responses)
+      subscription.subscribe();
+
+      // Finally unsubscribe to release subscription
+      subscription.unsubscribe();
+
+      // Finally perform logout to clear credentials
+      await tbClient.logout();
+    } catch (e, s) {
+      print('Error: $e');
+      print('Stack: $s');
+    }
+  }
+
   //method to create listTiles inside the drawer (My profile - Setting - Membership - Support )
   Widget _drawerTile({
     required String title,
