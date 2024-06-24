@@ -1,12 +1,13 @@
+import 'package:thingsboard_client/thingsboard_client.dart';
 import 'package:vext_app/models/vext_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'vext_notifier.g.dart';
 
 @riverpod
 class VextNotifier extends _$VextNotifier {
-  //FIXME: get this value from Shared Preferences later;
+  static const thingsBoardApiEndpoint = 'https://thingsboard.vinicentus.net';
 
-  // initial value
+  //FIXME: get the inital value from Shared Preferences later;
   @override
   VextModel build() {
     return VextModel(

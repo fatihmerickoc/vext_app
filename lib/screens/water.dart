@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:vext_app/backend/vext_backend.dart';
 import 'package:vext_app/provider/vext_notifier.dart';
 import 'package:vext_app/styles/styles.dart';
 
@@ -12,6 +13,12 @@ class Water extends ConsumerStatefulWidget {
 }
 
 class _WaterState extends ConsumerState<Water> {
+  @override
+  void initState() {
+    super.initState();
+    VextBackend().subThingsBoard(['waterVolume', 'led6Temp']);
+  }
+
   //method that builds a toggleswitch for the plantStageList (Seed - Growth - Mature)
   Widget _plantStageList() {
     return Row(
