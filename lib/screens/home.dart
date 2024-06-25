@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:thingsboard_client/thingsboard_client.dart';
 import 'package:vext_app/data/app_data.dart';
+import 'package:vext_app/models/vext_model.dart';
+import 'package:vext_app/provider/vext_notifier.dart';
 import 'package:vext_app/screens/drawer_screens/membership.dart';
 import 'package:vext_app/screens/drawer_screens/profile.dart';
 import 'package:vext_app/screens/drawer_screens/settings.dart';
@@ -15,6 +18,126 @@ class Home extends ConsumerStatefulWidget {
 }
 
 class _HomeState extends ConsumerState<Home> {
+  static const thingsBoardApiEndpoint = 'https://thingsboard.vinicentus.net';
+  static const username = 'fatih+tenant.admin@vext.fi';
+  static const password = '782246Vext.';
+  static const blackVextId = '7ffc0a50-0317-11ef-a0ef-7f542c4ca39c';
+
+  @override
+  void initState() {
+    super.initState();
+    subThingsBoard(
+      keys: ['waterVolume', 'ssid'],
+    );
+  }
+
+//method to create subscription to get telemetry updates
+  Future<void> subThingsBoard({required List<String> keys}) async {
+    try {
+      VextModel vextModel = VextModel('', '', 0);
+
+      var tbClient = ThingsboardClient(thingsBoardApiEndpoint);
+
+      await tbClient.login(LoginRequest(username, password));
+
+      var deviceName = 'Black Vext';
+
+      vextModel.vext_id = blackVextId;
+
+      var entityFilter = EntityNameFilter(
+          entityType: EntityType.DEVICE, entityNameFilter: deviceName);
+
+      var deviceFields = <EntityKey>[
+        EntityKey(type: EntityKeyType.ENTITY_FIELD, key: 'name'),
+        EntityKey(type: EntityKeyType.ENTITY_FIELD, key: 'type'),
+        EntityKey(type: EntityKeyType.ENTITY_FIELD, key: 'createdTime')
+      ];
+
+      var deviceTelemetry = <EntityKey>[
+        for (String key in keys)
+          EntityKey(type: EntityKeyType.TIME_SERIES, key: key),
+      ];
+
+      var devicesQuery = EntityDataQuery(
+        entityFilter: entityFilter,
+        entityFields: deviceFields,
+        latestValues: deviceTelemetry,
+        pageLink: EntityDataPageLink(
+          pageSize: 10,
+        ),
+      );
+
+      var currentTime = DateTime.now().millisecondsSinceEpoch;
+      var timeWindow = const Duration(hours: 1).inMilliseconds;
+
+      var tsCmd = TimeSeriesCmd(
+        keys: keys,
+        startTs: currentTime - timeWindow,
+        timeWindow: timeWindow,
+        limit: 1,
+      );
+
+      var latesCmd = LatestValueCmd(
+        keys: deviceTelemetry,
+      );
+
+      var cmd =
+          EntityDataCmd(query: devicesQuery, tsCmd: tsCmd, latestCmd: latesCmd);
+
+      var telemetryService = tbClient.getTelemetryService();
+
+      var subscription = TelemetrySubscriber(telemetryService, [cmd]);
+
+      print("Started");
+
+      subscription.entityDataStream.listen((entityDataUpdate) {
+        if (entityDataUpdate.update != null) {
+          for (var entityData in entityDataUpdate.update!) {
+            entityData.timeseries.forEach((key, value) {
+              for (var tsValue in value) {
+                switch (key) {
+                  case 'waterVolume':
+                    vextModel.vext_waterLevel =
+                        double.parse(tsValue.value!).round();
+                    break;
+                  case 'ssid':
+                    vextModel.vext_network = tsValue.value!;
+                }
+                print(
+                    'Telemetry key: $key, value: ${tsValue.value}, timestamp: ${tsValue.ts}\n');
+              }
+            });
+          }
+        } else {
+          print("No Updates");
+        }
+      });
+
+      subscription.subscribe();
+
+      //   var telemetryRequest = {
+      //     'temperature': temperature,
+      //     'humidity': humidity
+      //   };
+      //   print('Save telemetry request: $telemetryRequest');
+      //   var res = await tbClient.getAttributeService().saveEntityTelemetry(
+      //       savedDevice.id!, 'TELEMETRY', telemetryRequest);
+      //   print('Save telemetry result: $res');
+      // }
+
+      await Future.delayed(const Duration(milliseconds: 500));
+      subscription.unsubscribe();
+      await tbClient.logout();
+
+      ref.watch(vextNotifierProvider.notifier).updateVext(vextModel);
+
+      print("Ended");
+    } catch (e, s) {
+      print('Error: $e');
+      print('Stack: $s');
+    }
+  }
+
   //method to create listTiles inside the drawer (My profile - Setting - Membership - Support )
   Widget _drawerTile({
     required String title,
@@ -35,7 +158,7 @@ class _HomeState extends ConsumerState<Home> {
   Widget _menuButton() {
     return Builder(
       builder: (myContext) => GestureDetector(
-        onTap: () => Scaffold.of(context).openDrawer(),
+        onTap: () => Scaffold.of(myContext).openDrawer(),
         child: const Align(
           alignment: Alignment.topLeft,
           child: Icon(
@@ -79,8 +202,6 @@ class _HomeState extends ConsumerState<Home> {
 
   @override
   Widget build(BuildContext context) {
-    //final updatedVext = ref.watch(vextNotifierProvider);
-
     return Scaffold(
       drawer: Drawer(
         child: ListView(

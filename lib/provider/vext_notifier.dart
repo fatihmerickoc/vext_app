@@ -1,4 +1,3 @@
-import 'package:thingsboard_client/thingsboard_client.dart';
 import 'package:vext_app/models/vext_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'vext_notifier.g.dart';
@@ -11,14 +10,14 @@ class VextNotifier extends _$VextNotifier {
   @override
   VextModel build() {
     return VextModel(
-      "test_id",
-      [],
-      "text_network",
-      222,
-      false,
-      false,
-      'test_plantStage',
-      [],
+      "",
+      //[],
+      "",
+      0,
+      // false,
+      // false,
+      // 'test_plantStage',
+      //  [],
     );
   }
 
