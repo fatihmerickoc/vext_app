@@ -64,7 +64,7 @@ class _WaterState extends ConsumerState<Water> {
             ),
           ),
           Container(
-            height: value.toDouble() * 10,
+            height: value.toDouble(),
             decoration: BoxDecoration(
               color: color,
               borderRadius: const BorderRadius.only(
@@ -133,7 +133,7 @@ class _WaterState extends ConsumerState<Water> {
                   _statusBox(
                     title: 'A',
                     measureValue: 'dL',
-                    value: 14,
+                    value: 140,
                     color: Styles.muddyGreen,
                     flex: 1,
                   ),
@@ -141,7 +141,7 @@ class _WaterState extends ConsumerState<Water> {
                   _statusBox(
                     title: 'B',
                     measureValue: 'dL',
-                    value: 23,
+                    value: 230,
                     color: Styles.orange,
                     flex: 1,
                   ),
