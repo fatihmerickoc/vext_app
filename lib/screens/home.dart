@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vext_app/data/app_data.dart';
@@ -169,6 +167,7 @@ class _HomeState extends ConsumerState<Home> {
               Text('Device ID: ${vextModel.vext_id}'),
               Text('Network: ${vextModel.vext_network}'),
               Text('Water Level: ${vextModel.vext_waterLevel}'),
+              Text('Light Brightness: ${vextModel.vext_lightBrightness}'),
             ],
           ),
         ),

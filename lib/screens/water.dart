@@ -99,9 +99,32 @@ class _WaterState extends ConsumerState<Water> {
     );
   }
 
+  AlertDialog _alertDialog() {
+    return AlertDialog(
+      title: const Text(
+        'Refill Nutrients',
+        style: Styles.title_text,
+      ),
+      content: const Text(
+        'Set the estimated nutrient value',
+        style: Styles.body_text,
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.pop(context, 'Cancel'),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, 'OK'),
+          child: const Text('Done'),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final updatedVext = ref.watch(vextNotifierProvider);
+    final updatedVext = ref.read(vextNotifierProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -161,9 +184,15 @@ class _WaterState extends ConsumerState<Water> {
             const Spacer(),
             Padding(
               padding: const EdgeInsets.all(25.0),
-              child: Text(
-                'Refill nutrients',
-                style: Styles.title_text.copyWith(color: Styles.red),
+              child: TextButton(
+                onPressed: () => showDialog<String>(
+                  context: context,
+                  builder: (context) => _alertDialog(),
+                ),
+                child: Text(
+                  'Refill nutrients',
+                  style: Styles.title_text.copyWith(color: Styles.red),
+                ),
               ),
             ),
           ],

@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:thingsboard_client/thingsboard_client.dart';
 
 class ApiService {
-  final List<String> keys;
+  final List<String> telemetryKeys;
+  final List<String> attributeKeys;
 
   static const thingsBoardApiEndpoint = 'https://thingsboard.vinicentus.net';
   static const username = 'fatih+tenant.admin@vext.fi';
   static const password = '782246Vext.';
   static const deviceId = '7ffc0a50-0317-11ef-a0ef-7f542c4ca39c';
 
-  ApiService({required this.keys});
+  ApiService({required this.telemetryKeys, required this.attributeKeys});
 
   //method to create subscription to get telemetry updates
   Future<Map<String, dynamic>> fetchDataFromThingsBoard() async {
@@ -30,7 +31,7 @@ class ApiService {
       ];
 
       var deviceTelemetry = <EntityKey>[
-        for (String key in keys)
+        for (String key in telemetryKeys)
           EntityKey(type: EntityKeyType.TIME_SERIES, key: key),
       ];
 
@@ -44,10 +45,10 @@ class ApiService {
       );
 
       var currentTime = DateTime.now().millisecondsSinceEpoch;
-      var timeWindow = const Duration(hours: 1).inMilliseconds;
+      var timeWindow = const Duration(hours: 2).inMilliseconds;
 
       var tsCmd = TimeSeriesCmd(
-        keys: keys,
+        keys: telemetryKeys,
         startTs: currentTime - timeWindow,
         timeWindow: timeWindow,
         limit: 1,
@@ -73,11 +74,11 @@ class ApiService {
 
       var attributes = await tbClient
           .getAttributeService()
-          .getAttributeKvEntries(foundDevice!.id!, ['serialNumber']);
+          .getAttributeKvEntries(foundDevice!.id!, attributeKeys);
 
       for (int i = 0; i < attributes.length; i++) {
         String key = attributes[i].getKey();
-        String value = attributes[i].getValue();
+        var value = attributes[i].getValue();
         telemetryData[key] = value;
       }
 
@@ -97,7 +98,7 @@ class ApiService {
 
       subscription.subscribe();
 
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 600));
 
       subscription.unsubscribe();
       await tbClient.logout();
@@ -109,6 +110,38 @@ class ApiService {
       debugPrint('Stack: $s');
       await tbClient.logout();
       return {};
+    }
+  }
+
+  Future<void> setLightsFromSlider(int sliderValue) async {
+    var tbClient = ThingsboardClient(thingsBoardApiEndpoint);
+
+    try {
+      await tbClient.login(LoginRequest(username, password));
+
+      var foundDevice =
+          await tbClient.getDeviceService().getDeviceInfo(deviceId);
+
+      // Save device shared attributes
+      await tbClient.getAttributeService().saveEntityAttributesV2(
+        foundDevice!.id!,
+        AttributeScope.SHARED_SCOPE.toShortString(),
+        {'dimAllLedBrightness': sliderValue},
+        /*  {
+            'lowerLeftLedBrightness': sliderValue,
+            'lowerRightLedBrightness': sliderValue,
+            'middleLeftLedBrightness': sliderValue,
+            'middleRightLedBrightness': sliderValue,
+            'upperLeftLedBrightness': sliderValue,
+            'upperRightLedBrightness': sliderValue,
+          }*/
+      );
+
+      await tbClient.logout();
+    } catch (e, s) {
+      debugPrint('Error: $e');
+      debugPrint('Stack: $s');
+      await tbClient.logout();
     }
   }
 }

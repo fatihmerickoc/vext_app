@@ -9,9 +9,15 @@ class VextNotifier extends _$VextNotifier {
 
   @override
   VextModel build() {
-    _apiService = ApiService(keys: ['waterVolume', 'ssid']);
+    _apiService = ApiService(
+        telemetryKeys: ['waterVolume', 'ssid'],
+        attributeKeys: ['serialNumber', 'dimAllLedBrightness']);
     fetchData();
-    return VextModel(vext_id: '', vext_network: '', vext_waterLevel: 0);
+    return VextModel(
+        vext_id: '',
+        vext_network: '',
+        vext_waterLevel: 0,
+        vext_lightBrightness: 0);
   }
 
   Future<void> fetchData() async {
@@ -21,6 +27,18 @@ class VextNotifier extends _$VextNotifier {
       updateVext(vext);
     } catch (e) {
       print('Error fetching data: $e');
+    }
+  }
+
+  Future<void> updateLights(int sliderValue) async {
+    await _apiService.setLightsFromSlider(sliderValue);
+    if (state.vext_lightBrightness != sliderValue) {
+      state = VextModel(
+        vext_id: state.vext_id,
+        vext_network: state.vext_network,
+        vext_waterLevel: state.vext_waterLevel,
+        vext_lightBrightness: sliderValue,
+      );
     }
   }
 
