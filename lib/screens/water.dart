@@ -149,7 +149,7 @@ class _WaterState extends ConsumerState<Water> {
                     title: 'Water',
                     measureValue: 'L',
                     value: updatedVext.vext_waterLevel,
-                    color: Styles.lightBlue,
+                    color: Styles.waterColour,
                     flex: 2,
                   ),
                   Styles.width_5,

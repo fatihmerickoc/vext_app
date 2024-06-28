@@ -8,7 +8,7 @@ class ApiService {
   static const thingsBoardApiEndpoint = 'https://thingsboard.vinicentus.net';
   static const username = 'fatih+tenant.admin@vext.fi';
   static const password = '782246Vext.';
-  static const deviceId = '7ffc0a50-0317-11ef-a0ef-7f542c4ca39c';
+  static const deviceId = '9cc4a980-0317-11ef-a0ef-7f542c4ca39c';
 
   ApiService({required this.telemetryKeys, required this.attributeKeys});
 
@@ -19,7 +19,7 @@ class ApiService {
     try {
       await tbClient.login(LoginRequest(username, password));
 
-      var deviceName = 'Black Vext';
+      var deviceName = 'White Vext';
 
       var entityFilter = EntityNameFilter(
           entityType: EntityType.DEVICE, entityNameFilter: deviceName);
@@ -98,7 +98,7 @@ class ApiService {
 
       subscription.subscribe();
 
-      await Future.delayed(const Duration(milliseconds: 600));
+      await Future.delayed(const Duration(milliseconds: 700));
 
       subscription.unsubscribe();
       await tbClient.logout();
@@ -124,18 +124,44 @@ class ApiService {
 
       // Save device shared attributes
       await tbClient.getAttributeService().saveEntityAttributesV2(
-        foundDevice!.id!,
-        AttributeScope.SHARED_SCOPE.toShortString(),
-        {'dimAllLedBrightness': sliderValue},
-        /*  {
+          foundDevice!.id!,
+          AttributeScope.SHARED_SCOPE.toShortString(),
+          // {'dimAllLedBrightness': sliderValue},
+          {
             'lowerLeftLedBrightness': sliderValue,
             'lowerRightLedBrightness': sliderValue,
             'middleLeftLedBrightness': sliderValue,
             'middleRightLedBrightness': sliderValue,
             'upperLeftLedBrightness': sliderValue,
             'upperRightLedBrightness': sliderValue,
-          }*/
-      );
+          });
+
+      await tbClient.logout();
+    } catch (e, s) {
+      debugPrint('Error: $e');
+      debugPrint('Stack: $s');
+      await tbClient.logout();
+    }
+  }
+
+  Future<void> setTimeFromTimePicker(int turnOn, turnOFF) async {
+    var tbClient = ThingsboardClient(thingsBoardApiEndpoint);
+
+    try {
+      await tbClient.login(LoginRequest(username, password));
+
+      var foundDevice =
+          await tbClient.getDeviceService().getDeviceInfo(deviceId);
+
+      // Save device shared attributes
+      await tbClient.getAttributeService().saveEntityAttributesV2(
+          foundDevice!.id!,
+          AttributeScope.SHARED_SCOPE.toShortString(),
+          // {'dimAllLedBrightness': sliderValue},
+          {
+            'turnOnTime': turnOn,
+            'turnOffTime': turnOFF,
+          });
 
       await tbClient.logout();
     } catch (e, s) {

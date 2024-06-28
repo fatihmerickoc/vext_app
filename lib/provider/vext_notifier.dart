@@ -9,15 +9,24 @@ class VextNotifier extends _$VextNotifier {
 
   @override
   VextModel build() {
-    _apiService = ApiService(
-        telemetryKeys: ['waterVolume', 'ssid'],
-        attributeKeys: ['serialNumber', 'dimAllLedBrightness']);
+    _apiService = ApiService(telemetryKeys: [
+      'waterVolume',
+      'ssid'
+    ], attributeKeys: [
+      'serialNumber',
+      'middleRightLedBrightness',
+      'turnOnTime',
+      'turnOffTime'
+    ]);
     fetchData();
     return VextModel(
-        vext_id: '',
-        vext_network: '',
-        vext_waterLevel: 0,
-        vext_lightBrightness: 0);
+      vext_id: '',
+      vext_network: '',
+      vext_waterLevel: 0,
+      vext_lightBrightness: 0,
+      vext_turnOnTime: 0,
+      vext_turnOffTime: 0,
+    );
   }
 
   Future<void> fetchData() async {
@@ -38,6 +47,22 @@ class VextNotifier extends _$VextNotifier {
         vext_network: state.vext_network,
         vext_waterLevel: state.vext_waterLevel,
         vext_lightBrightness: sliderValue,
+        vext_turnOnTime: state.vext_turnOnTime,
+        vext_turnOffTime: state.vext_turnOffTime,
+      );
+    }
+  }
+
+  Future<void> updateTimes(int turnOn, turnOFF) async {
+    await _apiService.setTimeFromTimePicker(turnOn, turnOFF);
+    if (state.vext_turnOnTime != turnOn || state.vext_turnOffTime != turnOFF) {
+      state = VextModel(
+        vext_id: state.vext_id,
+        vext_network: state.vext_network,
+        vext_waterLevel: state.vext_waterLevel,
+        vext_lightBrightness: state.vext_lightBrightness,
+        vext_turnOnTime: turnOn,
+        vext_turnOffTime: turnOFF,
       );
     }
   }

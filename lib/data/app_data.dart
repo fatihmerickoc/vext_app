@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vext_app/models/plant_model.dart';
+import 'package:vext_app/models/task_model.dart';
 import 'package:vext_app/screens/lights.dart';
 import 'package:vext_app/screens/plant_guides.dart';
 import 'package:vext_app/screens/tasks.dart';
@@ -12,6 +13,7 @@ class AppData {
     'Lights\n100%': Icons.wb_sunny_outlined,
     'Refill in\n14 days': Icons.water_drop_outlined,
   };
+
   final homeRoutes = [
     const Tasks(),
     const PlantGuides(),
@@ -92,5 +94,16 @@ class AppData {
       '4-8',
       'Harvest individual leaves by cutting the largest leaves from the outside of the plant. New leaves will grow from the center of the plant.To harvest the whole plant in a way that let’s it re-grow, trim two thirds of the plant with clean scissors.',
     ),
+  ];
+
+  final List<TaskModel> taskData = [
+    TaskModel(
+        task_title: 'Plant new capsules',
+        task_dueDay: 'today',
+        task_category: 'Plants'),
+    TaskModel(
+        task_title: 'Refill water tank',
+        task_dueDay: 'today',
+        task_category: 'Water'),
   ];
 }

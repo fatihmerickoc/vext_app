@@ -6,6 +6,8 @@ class VextModel {
   String vext_network;
   int vext_waterLevel;
   int vext_lightBrightness;
+  int vext_turnOnTime;
+  int vext_turnOffTime;
   // bool vext_isLightOn;
   // bool vext_isCleaningModeOn;
   // String vext_plantStage;
@@ -16,14 +18,17 @@ class VextModel {
     required this.vext_network,
     required this.vext_waterLevel,
     required this.vext_lightBrightness,
+    required this.vext_turnOnTime,
+    required this.vext_turnOffTime,
   });
 
   factory VextModel.fromJson(Map<String, dynamic> json) {
     return VextModel(
-      vext_id: json['serialNumber'],
-      vext_network: json['ssid'],
-      vext_waterLevel: double.parse(json['waterVolume']).round(),
-      vext_lightBrightness: json['dimAllLedBrightness'],
-    );
+        vext_id: json['serialNumber'],
+        vext_network: json['ssid'],
+        vext_waterLevel: 23, //double.parse(json['waterVolume']).round(),
+        vext_lightBrightness: json['middleRightLedBrightness'],
+        vext_turnOnTime: json['turnOnTime'],
+        vext_turnOffTime: json['turnOffTime']);
   }
 }
