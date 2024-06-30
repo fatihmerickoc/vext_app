@@ -8,18 +8,18 @@ class ApiService {
   static const thingsBoardApiEndpoint = 'https://thingsboard.vinicentus.net';
   static const username = 'fatih+tenant.admin@vext.fi';
   static const password = '782246Vext.';
-  static const deviceId = '9cc4a980-0317-11ef-a0ef-7f542c4ca39c';
+  static const deviceId = '7ffc0a50-0317-11ef-a0ef-7f542c4ca39c';
+
+  var tbClient = ThingsboardClient(thingsBoardApiEndpoint);
 
   ApiService({required this.telemetryKeys, required this.attributeKeys});
 
   //method to create subscription to get telemetry updates
   Future<Map<String, dynamic>> fetchDataFromThingsBoard() async {
-    var tbClient = ThingsboardClient(thingsBoardApiEndpoint);
-
     try {
       await tbClient.login(LoginRequest(username, password));
 
-      var deviceName = 'White Vext';
+      var deviceName = 'Black Vext';
 
       var entityFilter = EntityNameFilter(
           entityType: EntityType.DEVICE, entityNameFilter: deviceName);
@@ -101,23 +101,21 @@ class ApiService {
       await Future.delayed(const Duration(milliseconds: 700));
 
       subscription.unsubscribe();
-      await tbClient.logout();
+      //await tbClient.logout();
       debugPrint("Ended");
 
       return telemetryData;
     } catch (e, s) {
       debugPrint('Error: $e');
       debugPrint('Stack: $s');
-      await tbClient.logout();
+      //await tbClient.logout();
       return {};
     }
   }
 
   Future<void> setLightsFromSlider(int sliderValue) async {
-    var tbClient = ThingsboardClient(thingsBoardApiEndpoint);
-
     try {
-      await tbClient.login(LoginRequest(username, password));
+      //  await tbClient.login(LoginRequest(username, password));
 
       var foundDevice =
           await tbClient.getDeviceService().getDeviceInfo(deviceId);
@@ -136,20 +134,16 @@ class ApiService {
             'upperRightLedBrightness': sliderValue,
           });
 
-      await tbClient.logout();
+      // await tbClient.logout();
     } catch (e, s) {
       debugPrint('Error: $e');
       debugPrint('Stack: $s');
-      await tbClient.logout();
+      // await tbClient.logout();
     }
   }
 
   Future<void> setTimeFromTimePicker(int turnOn, turnOFF) async {
-    var tbClient = ThingsboardClient(thingsBoardApiEndpoint);
-
     try {
-      await tbClient.login(LoginRequest(username, password));
-
       var foundDevice =
           await tbClient.getDeviceService().getDeviceInfo(deviceId);
 
@@ -163,11 +157,11 @@ class ApiService {
             'turnOffTime': turnOFF,
           });
 
-      await tbClient.logout();
+      //   await tbClient.logout();
     } catch (e, s) {
       debugPrint('Error: $e');
       debugPrint('Stack: $s');
-      await tbClient.logout();
+      // await tbClient.logout();
     }
   }
 }

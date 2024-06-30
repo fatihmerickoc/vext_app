@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:interactive_slider/interactive_slider.dart';
 import 'package:vext_app/provider/vext_notifier.dart';
 import 'package:vext_app/styles/styles.dart';
@@ -13,112 +13,232 @@ class Lights extends ConsumerStatefulWidget {
   const Lights({super.key});
 
   @override
-  ConsumerState<Lights> createState() => _LightsState();
+  ConsumerState<Lights> createState() => LightsState();
 }
 
-class _LightsState extends ConsumerState<Lights> {
-  double _slidervalue = 0;
-  TimeOfDay _turnOnAt = const TimeOfDay(hour: 6, minute: 0);
-  TimeOfDay _turnOffAt = const TimeOfDay(hour: 22, minute: 0);
+class LightsState extends ConsumerState<Lights> {
+  double _sliderValue = 0;
 
-  void _showTimePicker(bool isTurningOn) {
-    showTimePicker(
-            context: context, initialTime: isTurningOn ? _turnOnAt : _turnOffAt)
-        .then((value) {
-      if (isTurningOn) {
-        setState(() {
-          _turnOnAt = value!;
-        });
-        ref.watch(vextNotifierProvider.notifier).updateTimes(
+  TimeOfDay _turnOnAt = const TimeOfDay(hour: 0, minute: 0);
+  TimeOfDay _turnOffAt = const TimeOfDay(hour: 0, minute: 0);
+
+  Future<void> _showTimePicker(bool isTurningOn) async {
+    final selectedTime = await showTimePicker(
+      context: context,
+      initialTime: isTurningOn ? _turnOnAt : _turnOffAt,
+      initialEntryMode: TimePickerEntryMode.inputOnly,
+    );
+
+    if (selectedTime != null) {
+      setState(() {
+        if (isTurningOn) {
+          _turnOnAt = selectedTime;
+        } else {
+          _turnOffAt = selectedTime;
+        }
+      });
+
+      ref.watch(vextNotifierProvider.notifier).updateTimes(
             timeOfDayToMilliseconds(_turnOnAt),
-            timeOfDayToMilliseconds(_turnOffAt));
-      } else {
-        setState(() {
-          _turnOffAt = value!;
-        });
-        ref.watch(vextNotifierProvider.notifier).updateTimes(
-            timeOfDayToMilliseconds(_turnOnAt),
-            timeOfDayToMilliseconds(_turnOffAt));
-      }
-    });
+            timeOfDayToMilliseconds(_turnOffAt),
+          );
+    }
   }
 
-  Widget _lightsTile(String title, svgIcon, bool isTurnedOn) {
+  Widget _timePickerButton(String value, bool isFrom) {
     return InkWell(
-      onTap: () {
-        _showTimePicker(isTurnedOn);
-      },
+      onTap: () => _showTimePicker(isFrom),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 16.0),
+        padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-          border: Border.all(
-            color: Styles.yellow,
-          ),
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(15.0),
         ),
         child: Row(
           children: [
             Text(
-              title,
-              style: Styles.title_text.copyWith(fontWeight: FontWeight.w300),
+              isFrom
+                  ? _turnOnAt.format(context).toString()
+                  : _turnOffAt.format(context).toString(),
+              style: Styles.drawer_text,
             ),
-            const Spacer(),
-            Container(
-              padding: const EdgeInsets.symmetric(
-                vertical: 2.0,
-                horizontal: 8.0,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                border: Border.all(
-                  color: Styles.yellow,
-                ),
-              ),
-              child: Text(
-                isTurnedOn
-                    ? _turnOnAt.format(context).toString()
-                    : _turnOffAt.format(context).toString(),
-                style: Styles.title_text.copyWith(color: Colors.black),
-              ),
-            ),
-            const SizedBox(
-              width: 16.0,
-            ),
-            SvgPicture.asset(svgIcon)
+            const Icon(Icons.arrow_drop_down)
           ],
         ),
       ),
     );
   }
 
-  @override
-  void dispose() {
-    _debounce?.cancel();
-    super.dispose();
+  Widget _timeSelectionRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        const Text(
+          'From',
+          style: Styles.subtitle_text,
+        ),
+        _timePickerButton('6:00', true),
+        Styles.height_10,
+        const Text(
+          'To',
+          style: Styles.subtitle_text,
+        ),
+        _timePickerButton('22:00', false),
+      ],
+    );
   }
 
-  Widget _interactiveSlide() {
+  Widget _slider() {
     return InteractiveSlider(
-      unfocusedOpacity: 1,
-      unfocusedHeight: 30,
-      focusedHeight: 50,
-      padding: EdgeInsets.zero,
-      unfocusedMargin: const EdgeInsets.symmetric(horizontal: 0),
-      initialProgress: _slidervalue,
-      foregroundColor: Styles.yellow,
-      backgroundColor: Colors.white,
+      iconPosition: IconPosition.inside,
+      initialProgress: _sliderValue,
       min: 0.0,
       max: 100.0,
+      unfocusedMargin: EdgeInsets.zero,
+      unfocusedOpacity: 1,
+      unfocusedHeight: 50,
+      focusedHeight: 50,
+      padding: EdgeInsets.zero,
+      foregroundColor: Styles.yellow,
+      backgroundColor: Colors.grey.shade200,
+      shapeBorder: const StadiumBorder(
+        side: BorderSide(color: Styles.ligthBlack, strokeAlign: 1),
+      ),
+      startIcon:
+          const Icon(CupertinoIcons.brightness, color: Styles.ligthBlack),
+      endIcon:
+          const Icon(CupertinoIcons.brightness_solid, color: Styles.ligthBlack),
       onChanged: (value) async {
         setState(() {
-          _slidervalue = value;
+          _sliderValue = value;
         });
-        // Debounce the API call
         if (_debounce?.isActive ?? false) _debounce?.cancel();
         _debounce = Timer(const Duration(milliseconds: 100), () {
           ref.watch(vextNotifierProvider.notifier).updateLights(value.round());
         });
       },
+    );
+  }
+
+  Widget _buildContainer(
+      {required double height,
+      required List<Widget> children,
+      double borderRadius = 30,
+      EdgeInsetsGeometry padding = const EdgeInsets.all(16.0),
+      CrossAxisAlignment cross = CrossAxisAlignment.start}) {
+    return Container(
+      height: height,
+      decoration: BoxDecoration(
+        color: Styles.white,
+        borderRadius: BorderRadius.circular(borderRadius),
+      ),
+      padding: padding,
+      child: Column(crossAxisAlignment: cross, children: children),
+    );
+  }
+
+  AlertDialog _infoDialog() {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+      title: Text(
+        'WHY?',
+        style: Styles.drawer_text.copyWith(fontWeight: FontWeight.w500),
+      ),
+      content: const Text(
+        'The right amount of light helps plants reach their full potential and stay healthy. Giving you better results, and more to harvest!',
+        style: Styles.body_text,
+      ),
+      actions: <Widget>[
+        TextButton(
+          style: TextButton.styleFrom(foregroundColor: Styles.ligthBlack),
+          onPressed: () => Navigator.pop(context, 'Cancel'),
+          child: const Text(
+            'Done',
+            style: Styles.subtitle_text,
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final updatedVext = ref.watch(vextNotifierProvider);
+    _turnOffAt = millisecondsToTimeOfDay(updatedVext.vext_turnOffTime);
+    _turnOnAt = millisecondsToTimeOfDay(updatedVext.vext_turnOnTime);
+    _sliderValue = updatedVext.vext_lightBrightness.toDouble();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Lights', style: Styles.appBar_text),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16.0),
+          child: Column(
+            children: [
+              _buildContainer(
+                height: 160,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Schedule',
+                        style: Styles.drawer_text
+                            .copyWith(fontWeight: FontWeight.w500),
+                      ),
+                      InkWell(
+                        onTap: () => showDialog<String>(
+                          context: context,
+                          builder: (context) => _infoDialog(),
+                        ),
+                        child: const Icon(Icons.info_outline),
+                      ),
+                    ],
+                  ),
+                  const Text(
+                    'Aim for 14-16 hours of light each day',
+                    style: Styles.body_text,
+                  ),
+                  const Spacer(),
+                  _timeSelectionRow(),
+                ],
+              ),
+              Styles.height_15,
+              _buildContainer(
+                height: 160,
+                children: [
+                  Text(
+                    'Brightness',
+                    style: Styles.drawer_text
+                        .copyWith(fontWeight: FontWeight.w500),
+                  ),
+                  Text('Currently at ${updatedVext.vext_lightBrightness}%',
+                      style: Styles.body_text),
+                  const Spacer(),
+                  _slider(),
+                ],
+              ),
+              Styles.height_15,
+              /* _buildContainer(
+                height: 150,
+                children: [
+                  Text(
+                    'WHY?',
+                    style: Styles.drawer_text
+                        .copyWith(fontWeight: FontWeight.w500),
+                  ),
+                  const Text(
+                    'The right amount of light helps plants reach their full potential and stay healthy. Giving you better results, and more to harvest!',
+                    style: Styles.body_text,
+                  ),
+                ],
+              ),*/
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -129,75 +249,9 @@ class _LightsState extends ConsumerState<Lights> {
   }
 
   TimeOfDay millisecondsToTimeOfDay(int milliseconds) {
-    int totalMinutes =
-        milliseconds ~/ (60 * 1000); // Convert milliseconds to minutes
-    int hours = totalMinutes ~/ 60; // Extract hours
-    int minutes = totalMinutes % 60; // Extract remaining minutes
+    int totalMinutes = milliseconds ~/ (60 * 1000);
+    int hours = totalMinutes ~/ 60;
+    int minutes = totalMinutes % 60;
     return TimeOfDay(hour: hours, minute: minutes);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final updatedVext = ref.watch(vextNotifierProvider);
-    _turnOffAt = millisecondsToTimeOfDay(updatedVext.vext_turnOffTime);
-    _turnOnAt = millisecondsToTimeOfDay(updatedVext.vext_turnOnTime);
-    _slidervalue = updatedVext.vext_lightBrightness.toDouble();
-    print("BRIGHTNESS: ${updatedVext.vext_lightBrightness.toDouble()}");
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Lights',
-          style: Styles.appBar_text,
-        ),
-      ),
-      body: SafeArea(
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          ),
-          margin: const EdgeInsets.all(10.0),
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Light Schedule',
-                style: Styles.title_text.copyWith(fontWeight: FontWeight.w500),
-              ),
-              Text(
-                'Aim for 14 - 16 hours of light each day',
-                style: Styles.body_text.copyWith(fontWeight: FontWeight.w300),
-              ),
-              Styles.height_20,
-              _lightsTile('Turn on at', 'assets/sunrise.svg', true),
-              Styles.height_20,
-              _lightsTile('Turn off at', 'assets/sunset.svg', false),
-              Styles.height_30,
-              const Text(
-                '16 hours is plenty of light!',
-                style: Styles.title_text,
-              ),
-              Styles.height_30,
-              const Text(
-                'Why is light so important',
-                style: Styles.title_text,
-              ),
-              Text(
-                'The right amount of light helps plants reach\ntheir full potential and stay healthy. Giving you better results, and more to harvest!',
-                style: Styles.body_text.copyWith(fontWeight: FontWeight.w300),
-              ),
-              Styles.height_50,
-              Text(
-                "Brightness: ${updatedVext.vext_lightBrightness.toString()}%",
-                style: Styles.title_text,
-              ),
-              _interactiveSlide(),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }

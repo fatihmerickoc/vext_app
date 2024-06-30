@@ -86,8 +86,7 @@ class _HomeState extends ConsumerState<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final vextModel = ref.watch(vextNotifierProvider);
-
+    final updatedVext = ref.watch(vextNotifierProvider);
     return Scaffold(
       drawer: Drawer(
         child: ListView(
@@ -163,13 +162,7 @@ class _HomeState extends ConsumerState<Home> {
                   },
                 ),
               ),
-              /*  Styles.height_20,
-              Text('Device ID: ${vextModel.vext_id}'),
-              Text('Network: ${vextModel.vext_network}'),
-              Text('Water Level: ${vextModel.vext_waterLevel}'),
-              Text('Light Brightness: ${vextModel.vext_lightBrightness}'),
-              Text('TurnON Time: ${vextModel.vext_turnOnTime}'),
-              Text('TurnOFF Time: ${vextModel.vext_turnOffTime}'),*/
+              Styles.height_20,
             ],
           ),
         ),

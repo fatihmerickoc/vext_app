@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class Styles {
   //colors used in vext_app
+  static const white = Color(0xFFFAFAFA);
   static const backgroundColor = Color(0xFFF1F1F0);
   static const grey = Color(0xFFEFEFEF);
   static const muddyGreen = Color(0xFF3E7065);
@@ -18,6 +19,8 @@ class Styles {
   static const yellow = Color(0xFFF8BA38);
   static const orange = Color(0xFFF0A15E);
   static const ligthBlack = Color(0xFF2D2D2D);
+
+  static const containerColor = Color(0xFFDAD9D4);
 
   //text_styles used in vext_app
   static const appBar_text = TextStyle(fontSize: 30.0);
