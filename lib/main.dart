@@ -17,6 +17,12 @@ class MyApp extends StatelessWidget {
       title: 'Vext',
       theme: ThemeData(
         fontFamily: 'Inter',
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: Styles.ligthBlack,
+            textStyle: Styles.subtitle_text,
+          ),
+        ),
         drawerTheme: const DrawerThemeData(
           backgroundColor: Styles.backgroundColor,
         ),

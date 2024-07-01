@@ -96,14 +96,24 @@ class AppData {
     ),
   ];
 
-  final List<TaskModel> taskData = [
+  final List<TaskModel> task_thisWeek = [
     TaskModel(
-        task_title: 'Plant new capsules',
-        task_dueDay: 'today',
-        task_category: 'Plants'),
+      task_title: 'Plant new capsules',
+      task_dueDate: '2024-07-01T00:00:00.000',
+      task_category: 'Plants',
+    ),
     TaskModel(
-        task_title: 'Refill water tank',
-        task_dueDay: 'today',
-        task_category: 'Water'),
+      task_title: 'Refill water tank',
+      task_dueDate: '2024-07-01T00:00:00.000',
+      task_category: 'Water',
+    ),
+  ];
+
+  final List<TaskModel> task_futureWeek = [
+    TaskModel(
+      task_title: 'Sweep the lid',
+      task_dueDate: '2024-07-15T00:00:00.000',
+      task_category: 'Device',
+    ),
   ];
 }

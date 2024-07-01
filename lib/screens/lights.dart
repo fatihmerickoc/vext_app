@@ -89,34 +89,29 @@ class LightsState extends ConsumerState<Lights> {
   }
 
   Widget _slider() {
-    return InteractiveSlider(
-      iconPosition: IconPosition.inside,
-      initialProgress: _sliderValue,
-      min: 0.0,
-      max: 100.0,
-      unfocusedMargin: EdgeInsets.zero,
-      unfocusedOpacity: 1,
-      unfocusedHeight: 50,
-      focusedHeight: 50,
-      padding: EdgeInsets.zero,
-      foregroundColor: Styles.yellow,
-      backgroundColor: Colors.grey.shade200,
-      shapeBorder: const StadiumBorder(
-        side: BorderSide(color: Styles.ligthBlack, strokeAlign: 1),
+    return SliderTheme(
+      data: SliderThemeData(
+        trackHeight: 25,
+        overlayShape: SliderComponentShape.noOverlay,
       ),
-      startIcon:
-          const Icon(CupertinoIcons.brightness, color: Styles.ligthBlack),
-      endIcon:
-          const Icon(CupertinoIcons.brightness_solid, color: Styles.ligthBlack),
-      onChanged: (value) async {
-        setState(() {
-          _sliderValue = value;
-        });
-        if (_debounce?.isActive ?? false) _debounce?.cancel();
-        _debounce = Timer(const Duration(milliseconds: 100), () {
-          ref.watch(vextNotifierProvider.notifier).updateLights(value.round());
-        });
-      },
+      child: Slider(
+        value: _sliderValue,
+        inactiveColor: Colors.grey.shade200,
+        activeColor: Styles.orange,
+        thumbColor: Colors.white,
+        min: 0.0,
+        max: 100.0,
+        divisions: 4,
+        onChanged: (value) async {
+          setState(() {
+            _sliderValue = value;
+          });
+          if (_debounce?.isActive ?? false) _debounce?.cancel();
+          _debounce = Timer(const Duration(milliseconds: 100), () {
+            ref.read(vextNotifierProvider.notifier).updateLights(value.round());
+          });
+        },
+      ),
     );
   }
 
@@ -150,7 +145,6 @@ class LightsState extends ConsumerState<Lights> {
       ),
       actions: <Widget>[
         TextButton(
-          style: TextButton.styleFrom(foregroundColor: Styles.ligthBlack),
           onPressed: () => Navigator.pop(context, 'Cancel'),
           child: const Text(
             'Done',
@@ -193,7 +187,10 @@ class LightsState extends ConsumerState<Lights> {
                           context: context,
                           builder: (context) => _infoDialog(),
                         ),
-                        child: const Icon(Icons.info_outline),
+                        child: const Icon(
+                          Icons.info_outline,
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
                   ),
@@ -207,7 +204,7 @@ class LightsState extends ConsumerState<Lights> {
               ),
               Styles.height_15,
               _buildContainer(
-                height: 160,
+                height: 150,
                 children: [
                   Text(
                     'Brightness',
@@ -221,20 +218,6 @@ class LightsState extends ConsumerState<Lights> {
                 ],
               ),
               Styles.height_15,
-              /* _buildContainer(
-                height: 150,
-                children: [
-                  Text(
-                    'WHY?',
-                    style: Styles.drawer_text
-                        .copyWith(fontWeight: FontWeight.w500),
-                  ),
-                  const Text(
-                    'The right amount of light helps plants reach their full potential and stay healthy. Giving you better results, and more to harvest!',
-                    style: Styles.body_text,
-                  ),
-                ],
-              ),*/
             ],
           ),
         ),

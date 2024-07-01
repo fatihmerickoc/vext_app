@@ -87,6 +87,7 @@ class _HomeState extends ConsumerState<Home> {
   @override
   Widget build(BuildContext context) {
     final updatedVext = ref.watch(vextNotifierProvider);
+
     return Scaffold(
       drawer: Drawer(
         child: ListView(

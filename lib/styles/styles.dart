@@ -9,12 +9,9 @@ class Styles {
   static const grey = Color(0xFFEFEFEF);
   static const muddyGreen = Color(0xFF3E7065);
   static const green = Color(0xFF69866F);
-  static const lightGreen = Color(0xFF98E7A7);
   static const darkGreen = Color(0xFF19381F);
-  static const lightBlue = Color(0xFFC0EEE9);
   static const waterColour = Color(0xFFBCD6D5);
 
-  static const lightRed = Color(0xFFF7D9CC);
   static const red = Color(0xFFC45A4A);
   static const yellow = Color(0xFFF8BA38);
   static const orange = Color(0xFFF0A15E);

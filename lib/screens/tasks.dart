@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vext_app/data/app_data.dart';
 import 'package:vext_app/models/task_model.dart';
+import 'package:vext_app/screens/tasks_archive.dart';
 import 'package:vext_app/styles/styles.dart';
 
 class Tasks extends StatefulWidget {
@@ -11,132 +12,101 @@ class Tasks extends StatefulWidget {
 }
 
 class _TasksState extends State<Tasks> {
-  List<TaskModel> thisWeekTasks = [];
-  List<TaskModel> futureTasks = [
-    TaskModel(
-        task_dueDay: 'in 14 days',
-        task_category: 'Device',
-        task_title: 'Sweep the lid'),
-  ]; // Dummy future task
+  String _calendarText(String taskDueDate) {
+    DateTime now = DateTime.now();
+    DateTime task = DateTime.parse(taskDueDate);
+    int difference = task.difference(now).inDays;
 
-  @override
-  void initState() {
-    super.initState();
-    thisWeekTasks =
-        List.from(AppData().taskData); // Assuming all tasks are for this week
-  }
-
-  Color getCategoryColour(String category) {
-    switch (category) {
-      case "Plants":
-        return Styles.lightGreen;
-      case "Device":
-        return Styles.lightRed;
-      case "Water":
-        return Styles.lightBlue;
-      default:
-        return Colors.grey;
+    if (difference == 0) {
+      return "Due today";
+    } else {
+      return "Due in ${difference} days";
     }
   }
 
-  void _removeTask(TaskModel task) {
-    setState(() {
-      thisWeekTasks.remove(task);
-      futureTasks.remove(task); // If you also want to remove from future tasks
-    });
-  }
-
-  Widget _topRow(String due, String category, TaskModel task) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-          decoration: BoxDecoration(
-            color: getCategoryColour(category),
-            borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+  Widget _taskContainer(TaskModel task) {
+    return Container(
+      height: 100,
+      margin: const EdgeInsets.only(
+        bottom: 10.0,
+        top: 5.0,
+        right: 10.0,
+      ),
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              _categoryContainer(task.task_category),
+              Styles.width_15,
+              const Icon(
+                Icons.calendar_today,
+                color: Colors.grey,
+                size: 18,
+              ),
+              Styles.width_5,
+              Text(
+                _calendarText(task.task_dueDate),
+                style: const TextStyle(fontSize: 13.0, color: Colors.grey),
+              )
+            ],
           ),
-          child: Text(
-            category,
-            style: Styles.body_text,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                task.task_title,
+                style: const TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const Icon(Icons.check_box_outline_blank),
+            ],
           ),
-        ),
-        Styles.width_10,
-        const Icon(
-          Icons.calendar_today,
-          size: 20,
-          color: Styles.yellow,
-        ),
-        Styles.width_5,
-        Text(
-          'Due $due',
-          style: Styles.body_text
-              .copyWith(color: Styles.yellow, fontWeight: FontWeight.w500),
-        ),
-      ],
-    );
-  }
-
-  Widget _taskCard(TaskModel task) {
-    return Card(
-      elevation: 2.0,
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _topRow(task.task_dueDay, task.task_category, task),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  task.task_title,
-                  style:
-                      Styles.title_text.copyWith(fontWeight: FontWeight.w500),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.check_box_outline_blank_rounded),
-                  onPressed: () => _removeTask(task),
-                ),
-              ],
+          Text(
+            'Learn how',
+            style: Styles.subtitle_text.copyWith(
+              color: Colors.grey,
+              decoration: TextDecoration.underline,
+              decorationColor: Colors.grey,
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Learn how',
-              style: Styles.body_text.copyWith(
-                  color: Colors.grey,
-                  decoration: TextDecoration.underline,
-                  decorationColor: Colors.grey),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _taskList(List<TaskModel> tasks) {
-    return ListView.builder(
-      itemCount: tasks.length,
-      itemBuilder: (BuildContext context, int index) {
-        return _taskCard(tasks[index]);
-      },
-    );
-  }
-
-  Widget _section(String title, Widget content) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: Styles.title_text,
-          ),
-          Styles.height_10,
-          content,
-        ],
+  Widget _categoryContainer(String category) {
+    late Color color;
+    switch (category) {
+      case 'Device':
+        color = Colors.red.shade200;
+        break;
+      case 'Water':
+        color = Colors.blue.shade200;
+        break;
+      case "Plants":
+        color = Colors.green.shade200;
+        break;
+      default:
+        color = Colors.pink.shade200;
+    }
+    return Container(
+      padding: const EdgeInsets.all(4.0),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: Text(
+        category,
+        style: Styles.subtitle_text.copyWith(fontWeight: FontWeight.w500),
       ),
     );
   }
@@ -149,6 +119,18 @@ class _TasksState extends State<Tasks> {
           'Tasks',
           style: Styles.appBar_text,
         ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const TasksArchive()));
+            },
+            icon: const Icon(Icons.archive_outlined),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Padding(
@@ -156,19 +138,30 @@ class _TasksState extends State<Tasks> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _section(
+              Text(
                 'This Week',
-                SizedBox(
-                  height: 300,
-                  child: _taskList(thisWeekTasks),
+                style: Styles.drawer_text.copyWith(fontWeight: FontWeight.w500),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: AppData().task_thisWeek.length,
+                  itemBuilder: (context, index) {
+                    TaskModel task = AppData().task_thisWeek[index];
+                    return _taskContainer(task);
+                  },
                 ),
               ),
-              Spacer(),
-              _section(
-                'Future Tasks',
-                SizedBox(
-                  height: 250,
-                  child: _taskList(futureTasks),
+              Text(
+                'Upcoming Tasks',
+                style: Styles.drawer_text.copyWith(fontWeight: FontWeight.w500),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: AppData().task_futureWeek.length,
+                  itemBuilder: (context, index) {
+                    TaskModel task = AppData().task_futureWeek[index];
+                    return _taskContainer(task);
+                  },
                 ),
               ),
             ],
