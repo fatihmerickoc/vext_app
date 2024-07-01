@@ -23,7 +23,7 @@ class _TasksArchiveState extends ConsumerState<TasksArchive> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Past Tasks',
+                'Previous Tasks',
                 style: Styles.drawer_text.copyWith(fontWeight: FontWeight.w500),
               ),
             ],
