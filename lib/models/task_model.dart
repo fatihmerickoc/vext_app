@@ -2,7 +2,7 @@
 
 class TaskModel {
   String task_title;
-  String task_dueDate;
+  int task_dueDate;
   String task_category;
 
   TaskModel({
@@ -10,4 +10,12 @@ class TaskModel {
     required this.task_dueDate,
     required this.task_category,
   });
+
+  factory TaskModel.fromJson(Map<String, dynamic> json) {
+    return TaskModel(
+      task_title: json['value'],
+      task_dueDate: json['due'],
+      task_category: json['value'],
+    );
+  }
 }

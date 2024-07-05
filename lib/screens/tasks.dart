@@ -1,27 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:vext_app/data/app_data.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vext_app/models/task_model.dart';
+import 'package:vext_app/provider/vext_notifier.dart';
 import 'package:vext_app/screens/tasks_archive.dart';
 import 'package:vext_app/styles/styles.dart';
 
-class Tasks extends StatefulWidget {
+class Tasks extends ConsumerStatefulWidget {
   const Tasks({super.key});
 
   @override
-  State<Tasks> createState() => _TasksState();
+  ConsumerState<Tasks> createState() => _TasksState();
 }
 
-class _TasksState extends State<Tasks> {
-  String _calendarText(String taskDueDate) {
-    DateTime now = DateTime.now();
-    DateTime task = DateTime.parse(taskDueDate);
-    int difference = task.difference(now).inDays;
-
-    if (difference == 0) {
-      return "Due today";
-    } else {
-      return "Due in ${difference} days";
-    }
+class _TasksState extends ConsumerState<Tasks> {
+  String _calendarText() {
+    return "Due in 0 days";
   }
 
   Widget _taskContainer(TaskModel task) {
@@ -52,7 +45,7 @@ class _TasksState extends State<Tasks> {
               ),
               Styles.width_5,
               Text(
-                _calendarText(task.task_dueDate),
+                _calendarText(),
                 style: const TextStyle(fontSize: 13.0, color: Colors.grey),
               )
             ],
@@ -113,6 +106,7 @@ class _TasksState extends State<Tasks> {
 
   @override
   Widget build(BuildContext context) {
+    final updatedVext = ref.watch(vextNotifierProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -144,9 +138,9 @@ class _TasksState extends State<Tasks> {
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: AppData().task_thisWeek.length,
+                  itemCount: updatedVext.vext_tasks.length,
                   itemBuilder: (context, index) {
-                    TaskModel task = AppData().task_thisWeek[index];
+                    TaskModel task = updatedVext.vext_tasks[index];
                     return _taskContainer(task);
                   },
                 ),
@@ -157,9 +151,9 @@ class _TasksState extends State<Tasks> {
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: AppData().task_futureWeek.length,
+                  itemCount: updatedVext.vext_completedTasks.length,
                   itemBuilder: (context, index) {
-                    TaskModel task = AppData().task_futureWeek[index];
+                    TaskModel task = updatedVext.vext_completedTasks[index];
                     return _taskContainer(task);
                   },
                 ),

@@ -95,25 +95,4 @@ class AppData {
       'Harvest individual leaves by cutting the largest leaves from the outside of the plant. New leaves will grow from the center of the plant.To harvest the whole plant in a way that let’s it re-grow, trim two thirds of the plant with clean scissors.',
     ),
   ];
-
-  final List<TaskModel> task_thisWeek = [
-    TaskModel(
-      task_title: 'Plant new capsules',
-      task_dueDate: '2024-07-01T00:00:00.000',
-      task_category: 'Plants',
-    ),
-    TaskModel(
-      task_title: 'Refill water tank',
-      task_dueDate: '2024-07-01T00:00:00.000',
-      task_category: 'Water',
-    ),
-  ];
-
-  final List<TaskModel> task_futureWeek = [
-    TaskModel(
-      task_title: 'Sweep the lid',
-      task_dueDate: '2024-07-15T00:00:00.000',
-      task_category: 'Device',
-    ),
-  ];
 }

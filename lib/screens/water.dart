@@ -12,43 +12,31 @@ class Water extends ConsumerStatefulWidget {
 }
 
 class _WaterState extends ConsumerState<Water> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   //method that builds a toggleswitch for the plantStageList (Seed - Growth - Mature)
   Widget _plantStageList() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(5.0),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF1F1F0),
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: ToggleSwitch(
-            minWidth: 100,
-            customTextStyles: [Styles.body_text.copyWith(color: Colors.black)],
-            initialLabelIndex: 0,
-            totalSwitches: 3,
-            activeBgColor: const [Colors.white],
-            inactiveBgColor: Colors.transparent,
-            labels: const ['Seed', 'Growth', 'Mature'],
-          ),
-        ),
+    return ToggleSwitch(
+      minWidth: 120,
+      minHeight: 50,
+      customTextStyles: [
+        Styles.body_text.copyWith(color: Colors.black),
       ],
+      initialLabelIndex: 0,
+      totalSwitches: 3,
+      cornerRadius: 20,
+      activeBgColor: [Colors.grey.shade300],
+      inactiveBgColor: Colors.grey.shade200,
+      labels: const ['Seed', 'Growth', 'Mature'],
     );
   }
 
   //method that produces boxes for different ingredients such as Water, Vitamin A and Vitamin B
-  Widget _statusBox(
-      {required int flex,
-      required Color color,
-      required String title,
-      required int value,
-      required String measureValue}) {
+  Widget _statusBox({
+    int flex = 1,
+    required Color color,
+    required String title,
+    required int value,
+    required String measureValue,
+  }) {
     return Expanded(
       flex: flex,
       child: Stack(
@@ -56,10 +44,10 @@ class _WaterState extends ConsumerState<Water> {
         children: [
           Container(
             height: 300,
-            decoration: const BoxDecoration(
-              color: Styles.grey,
-              borderRadius: BorderRadius.all(
-                Radius.circular(10.0),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              borderRadius: const BorderRadius.all(
+                Radius.circular(30.0),
               ),
             ),
           ),
@@ -68,8 +56,8 @@ class _WaterState extends ConsumerState<Water> {
             decoration: BoxDecoration(
               color: color,
               borderRadius: const BorderRadius.only(
-                bottomRight: Radius.circular(10.0),
-                bottomLeft: Radius.circular(10.0),
+                bottomRight: Radius.circular(30.0),
+                bottomLeft: Radius.circular(30.0),
               ),
             ),
             child: Container(
@@ -128,74 +116,97 @@ class _WaterState extends ConsumerState<Water> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Vext Status',
+          'Status',
           style: Styles.appBar_text,
         ),
       ),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              margin: const EdgeInsets.all(16.0),
-              padding: const EdgeInsets.all(12.0),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              ),
-              child: Row(
-                children: [
-                  _statusBox(
-                    title: 'Water',
-                    measureValue: 'L',
-                    value: updatedVext.vext_waterLevel,
-                    color: Styles.waterColour,
-                    flex: 2,
-                  ),
-                  Styles.width_5,
-                  _statusBox(
-                    title: 'A',
-                    measureValue: 'dL',
-                    value: 0,
-                    color: Styles.muddyGreen,
-                    flex: 1,
-                  ),
-                  Styles.width_5,
-                  _statusBox(
-                    title: 'B',
-                    measureValue: 'dL',
-                    value: 0,
-                    color: Styles.orange,
-                    flex: 1,
-                  ),
-                ],
-              ),
-            ),
-            Center(
-              child: Text(
-                'Plant stage',
-                style: Styles.title_text.copyWith(
-                  fontWeight: FontWeight.w400,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                ),
+                child: Row(
+                  children: [
+                    _statusBox(
+                      title: 'Water',
+                      measureValue: 'L',
+                      value: updatedVext.vext_waterLevel,
+                      color: Styles.waterColour,
+                      flex: 2,
+                    ),
+                    Styles.width_5,
+                    _statusBox(
+                      title: 'A',
+                      measureValue: 'dL',
+                      value: 0,
+                      color: Styles.muddyGreen,
+                    ),
+                    Styles.width_5,
+                    _statusBox(
+                      title: 'B',
+                      measureValue: 'dL',
+                      value: 0,
+                      color: Styles.orange,
+                    ),
+                  ],
                 ),
               ),
-            ),
-            Styles.height_10,
-            _plantStageList(),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(25.0),
-              child: TextButton(
+              Styles.height_15,
+              Container(
+                height: 130,
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Styles.white,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Plant Stage',
+                          style: Styles.drawer_text
+                              .copyWith(fontWeight: FontWeight.w500),
+                        ),
+                        InkWell(
+                          onTap: () => showDialog<String>(
+                            context: context,
+                            builder: (context) => _alertDialog(),
+                          ),
+                          child: const Icon(
+                            Icons.info_outline,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    _plantStageList(),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              TextButton(
                 onPressed: () => showDialog<String>(
                   context: context,
                   builder: (context) => _alertDialog(),
                 ),
                 child: Text(
                   'Refill nutrients',
-                  style: Styles.title_text.copyWith(color: Styles.red),
+                  style: Styles.title_text.copyWith(color: Styles.ligthBlack),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

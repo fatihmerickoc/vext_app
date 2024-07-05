@@ -1,3 +1,4 @@
+import 'package:vext_app/models/task_model.dart';
 import 'package:vext_app/models/vext_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vext_app/service/api_service.dart';
@@ -9,15 +10,15 @@ class VextNotifier extends _$VextNotifier {
 
   @override
   VextModel build() {
-    _apiService = ApiService(telemetryKeys: [
-      'waterVolume',
-      'ssid'
-    ], attributeKeys: [
-      'serialNumber',
-      'middleRightLedBrightness',
-      'turnOnTime',
-      'turnOffTime'
-    ]);
+    _apiService = ApiService(
+      telemetryKeys: ['waterVolume', 'ssid'],
+      attributeKeys: [
+        'serialNumber',
+        'middleRightLedBrightness',
+        'turnOnTime',
+        'turnOffTime',
+      ],
+    );
     fetchData();
     return VextModel(
       vext_id: '',
@@ -26,6 +27,8 @@ class VextNotifier extends _$VextNotifier {
       vext_lightBrightness: 0,
       vext_turnOnTime: 0,
       vext_turnOffTime: 0,
+      vext_tasks: [],
+      vext_completedTasks: [],
     );
   }
 
@@ -49,6 +52,8 @@ class VextNotifier extends _$VextNotifier {
         vext_lightBrightness: sliderValue,
         vext_turnOnTime: state.vext_turnOnTime,
         vext_turnOffTime: state.vext_turnOffTime,
+        vext_tasks: state.vext_tasks,
+        vext_completedTasks: state.vext_completedTasks,
       );
     }
   }
@@ -63,6 +68,8 @@ class VextNotifier extends _$VextNotifier {
         vext_lightBrightness: state.vext_lightBrightness,
         vext_turnOnTime: turnOn,
         vext_turnOffTime: turnOFF,
+        vext_tasks: state.vext_tasks,
+        vext_completedTasks: state.vext_completedTasks,
       );
     }
   }

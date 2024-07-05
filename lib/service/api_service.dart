@@ -79,6 +79,7 @@ class ApiService {
       for (int i = 0; i < attributes.length; i++) {
         String key = attributes[i].getKey();
         var value = attributes[i].getValue();
+
         telemetryData[key] = value;
       }
 
@@ -165,8 +166,6 @@ class ApiService {
     }
   }
 }
-
-
 
 //to save updates
 /*  var telemetryRequest = {
