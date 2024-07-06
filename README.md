@@ -9,7 +9,7 @@ vext creates fridges for plants to grow in the most efficient way possible by pr
 
 ## 🛠️ Getting Started
 ### Prerequisites
-- Flutter SDK:[Install Flutter](https://docs.flutter.dev/get-started/install)
+- Flutter SDK: [Install Flutter](https://docs.flutter.dev/get-started/install)
 - Thingsboard account & credentials 
 
 ### Installation
@@ -28,9 +28,11 @@ flutter pub get
 flutter run
 ```
 ## 📦 Built With
--[Flutter](https://flutter.dev/) - the mobile framework
--[ThingsBoard](https://thingsboard.io/) -  IoT platform for device management
--[Riverpod](https://riverpod.dev/) - state management library
+-[Flutter](https://flutter.dev/) ~ the mobile framework
+
+-[ThingsBoard](https://thingsboard.io/) ~  IoT platform for device management
+
+-[Riverpod](https://riverpod.dev/) ~ state management library
 
 ## 🌟 Contributing:
 contributions are welcome! fork the repository and create a pull request with your changes. make sure your code follows the project's standards and includes tests.
