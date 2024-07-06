@@ -118,7 +118,7 @@ class LightsState extends ConsumerState<Lights> {
   Widget _buildContainer(
       {required double height,
       required List<Widget> children,
-      double borderRadius = 30,
+      double borderRadius = 30.0,
       EdgeInsetsGeometry padding = const EdgeInsets.all(16.0),
       CrossAxisAlignment cross = CrossAxisAlignment.start}) {
     return Container(
@@ -134,7 +134,7 @@ class LightsState extends ConsumerState<Lights> {
 
   AlertDialog _infoDialog() {
     return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       title: Text(
         'WHY?',
         style: Styles.drawer_text.copyWith(fontWeight: FontWeight.w500),

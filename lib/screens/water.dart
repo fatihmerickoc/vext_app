@@ -17,14 +17,12 @@ class _WaterState extends ConsumerState<Water> {
     return ToggleSwitch(
       minWidth: 120,
       minHeight: 50,
-      customTextStyles: [
-        Styles.body_text.copyWith(color: Colors.black),
-      ],
+      customTextStyles: const [Styles.body_text],
       initialLabelIndex: 0,
       totalSwitches: 3,
       cornerRadius: 20,
-      activeBgColor: [Colors.grey.shade300],
-      inactiveBgColor: Colors.grey.shade200,
+      inactiveBgColor: Colors.grey.shade300,
+      activeBgColor: [Colors.grey.shade200],
       labels: const ['Seed', 'Growth', 'Mature'],
     );
   }
@@ -110,6 +108,29 @@ class _WaterState extends ConsumerState<Water> {
     );
   }
 
+  AlertDialog _infoDialog() {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+      title: Text(
+        'WHAT?',
+        style: Styles.drawer_text.copyWith(fontWeight: FontWeight.w500),
+      ),
+      content: const Text(
+        'Seed: Gentle light and nutrients for germination.\n\nGrowth: Increased light and nutrients for development.\n\nMature: Balanced care for fully grown plants.',
+        style: Styles.body_text,
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.pop(context, 'Cancel'),
+          child: const Text(
+            'Done',
+            style: Styles.subtitle_text,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final updatedVext = ref.read(vextNotifierProvider);
@@ -180,7 +201,7 @@ class _WaterState extends ConsumerState<Water> {
                         InkWell(
                           onTap: () => showDialog<String>(
                             context: context,
-                            builder: (context) => _alertDialog(),
+                            builder: (context) => _infoDialog(),
                           ),
                           child: const Icon(
                             Icons.info_outline,

@@ -8,7 +8,7 @@ class ApiService {
   static const thingsBoardApiEndpoint = 'https://thingsboard.vinicentus.net';
   static const username = 'fatih+tenant.admin@vext.fi';
   static const password = '782246Vext.';
-  static const deviceId = '7ffc0a50-0317-11ef-a0ef-7f542c4ca39c';
+  static const deviceId = '9cc4a980-0317-11ef-a0ef-7f542c4ca39c';
 
   var tbClient = ThingsboardClient(thingsBoardApiEndpoint);
 
@@ -19,7 +19,7 @@ class ApiService {
     try {
       await tbClient.login(LoginRequest(username, password));
 
-      var deviceName = 'Black Vext';
+      var deviceName = 'Whte Vext';
 
       var entityFilter = EntityNameFilter(
           entityType: EntityType.DEVICE, entityNameFilter: deviceName);
