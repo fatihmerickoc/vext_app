@@ -28,11 +28,11 @@ flutter pub get
 flutter run
 ```
 ## 📦 Built With
--[Flutter](https://flutter.dev/) ~ the mobile framework
+[Flutter](https://flutter.dev/) ~ the mobile framework
 
--[ThingsBoard](https://thingsboard.io/) ~  IoT platform for device management
+[ThingsBoard](https://thingsboard.io/) ~  IoT platform for device management
 
--[Riverpod](https://riverpod.dev/) ~ state management library
+[Riverpod](https://riverpod.dev/) ~ state management library
 
 ## 🌟 Contributing:
 contributions are welcome! fork the repository and create a pull request with your changes. make sure your code follows the project's standards and includes tests.
