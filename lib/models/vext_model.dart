@@ -36,25 +36,8 @@ class VextModel {
       vext_lightBrightness: json['middleRightLedBrightness'],
       vext_turnOnTime: json['turnOnTime'],
       vext_turnOffTime: json['turnOffTime'],
-      vext_tasks: [
-        TaskModel(
-          task_title: 'Plant new capsules',
-          task_dueDate: 1719848963,
-          task_category: 'Plants',
-        ),
-        TaskModel(
-          task_title: 'Refill water tank',
-          task_dueDate: 1728460163,
-          task_category: 'Water',
-        ),
-      ],
-      vext_completedTasks: [
-        TaskModel(
-          task_title: 'Sweep the lid',
-          task_dueDate: 1728460163,
-          task_category: 'Device',
-        ),
-      ],
+      vext_tasks: json['tasks'],
+      vext_completedTasks: [],
     );
   }
 }

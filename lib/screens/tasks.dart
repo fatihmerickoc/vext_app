@@ -13,8 +13,22 @@ class Tasks extends ConsumerStatefulWidget {
 }
 
 class _TasksState extends ConsumerState<Tasks> {
-  String _calendarText() {
+  String _taskDueText() {
     return "Due in 0 days";
+  }
+
+  Widget _taskCategoryContainer(String category, String color) {
+    return Container(
+      padding: const EdgeInsets.all(4.0),
+      decoration: BoxDecoration(
+        color: Color(int.parse(color)),
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: Text(
+        category,
+        style: Styles.subtitle_text.copyWith(fontWeight: FontWeight.w500),
+      ),
+    );
   }
 
   Widget _taskContainer(TaskModel task) {
@@ -36,7 +50,8 @@ class _TasksState extends ConsumerState<Tasks> {
         children: [
           Row(
             children: [
-              _categoryContainer(task.task_category),
+              _taskCategoryContainer(
+                  task.task_category, task.task_category_color),
               Styles.width_15,
               const Icon(
                 Icons.calendar_today,
@@ -45,7 +60,7 @@ class _TasksState extends ConsumerState<Tasks> {
               ),
               Styles.width_5,
               Text(
-                _calendarText(),
+                _taskDueText(),
                 style: const TextStyle(fontSize: 13.0, color: Colors.grey),
               )
             ],
@@ -54,7 +69,7 @@ class _TasksState extends ConsumerState<Tasks> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                task.task_title,
+                task.task_name,
                 style: const TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.w500,
@@ -63,43 +78,18 @@ class _TasksState extends ConsumerState<Tasks> {
               const Icon(Icons.check_box_outline_blank),
             ],
           ),
-          Text(
-            'Learn how',
-            style: Styles.subtitle_text.copyWith(
-              color: Colors.grey,
-              decoration: TextDecoration.underline,
-              decorationColor: Colors.grey,
+          InkWell(
+            onTap: () => debugPrint(task.task_description),
+            child: Text(
+              'Learn how',
+              style: Styles.subtitle_text.copyWith(
+                color: Colors.grey,
+                decoration: TextDecoration.underline,
+                decorationColor: Colors.grey,
+              ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _categoryContainer(String category) {
-    late Color color;
-    switch (category) {
-      case 'Device':
-        color = Colors.red.shade200;
-        break;
-      case 'Water':
-        color = Colors.blue.shade200;
-        break;
-      case "Plants":
-        color = Colors.green.shade200;
-        break;
-      default:
-        color = Colors.pink.shade200;
-    }
-    return Container(
-      padding: const EdgeInsets.all(4.0),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(5.0),
-      ),
-      child: Text(
-        category,
-        style: Styles.subtitle_text.copyWith(fontWeight: FontWeight.w500),
       ),
     );
   }

@@ -34,7 +34,7 @@ class VextNotifier extends _$VextNotifier {
 
   Future<void> fetchData() async {
     try {
-      final jsonData = await _apiService.fetchDataFromThingsBoard();
+      final jsonData = await _apiService.fetchDataForVextModel();
       final vext = VextModel.fromJson(jsonData);
       updateVext(vext);
     } catch (e) {

@@ -1,21 +1,39 @@
 // ignore_for_file: non_constant_identifier_names
 
 class TaskModel {
-  String task_title;
-  int task_dueDate;
-  String task_category;
+  final String task_name;
+  final String task_category;
+  final String task_category_color;
+  final String task_description;
+  final DateTime task_createdAt;
+  final DateTime task_dueDate;
+  final DateTime? task_completedDate; // completed date can be nullable
 
   TaskModel({
-    required this.task_title,
-    required this.task_dueDate,
+    required this.task_name,
     required this.task_category,
+    required this.task_category_color,
+    required this.task_description,
+    required this.task_createdAt,
+    required this.task_dueDate,
+    this.task_completedDate,
   });
 
   factory TaskModel.fromJson(Map<String, dynamic> json) {
     return TaskModel(
-      task_title: json['value'],
-      task_dueDate: json['due'],
-      task_category: json['value'],
+      task_name: json['name'] ?? "not-found",
+      task_category: json['category'] ?? "not-found",
+      task_category_color: json['category_color'] ?? "0xFF808080",
+      task_description: json['description'] ?? "not-found",
+      task_createdAt: json['created_at'] != null
+          ? DateTime.tryParse(json['created_at'].toString()) as DateTime
+          : DateTime.fromMillisecondsSinceEpoch(0),
+      task_dueDate: json['due_date'] != null
+          ? DateTime.tryParse(json['due_date'].toString()) as DateTime
+          : DateTime.fromMillisecondsSinceEpoch(0),
+      task_completedDate: json['completed_date'] != null
+          ? DateTime.tryParse(json['completed_date'].toString()) as DateTime
+          : DateTime.fromMillisecondsSinceEpoch(0),
     );
   }
 }
