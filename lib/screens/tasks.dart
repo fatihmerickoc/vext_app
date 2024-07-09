@@ -13,8 +13,11 @@ class Tasks extends ConsumerStatefulWidget {
 }
 
 class _TasksState extends ConsumerState<Tasks> {
-  String _taskDueText() {
-    return "Due in 0 days";
+  String _taskDueText(DateTime date) {
+    DateTime rn = DateTime.now();
+    int difference = date.difference(rn).inDays;
+
+    return difference < 1 ? "Due today" : "Due in $difference days";
   }
 
   Widget _taskCategoryContainer(String category, String color) {
@@ -60,7 +63,7 @@ class _TasksState extends ConsumerState<Tasks> {
               ),
               Styles.width_5,
               Text(
-                _taskDueText(),
+                _taskDueText(task.task_dueDate),
                 style: const TextStyle(fontSize: 13.0, color: Colors.grey),
               )
             ],
