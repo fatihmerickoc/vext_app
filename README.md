@@ -7,6 +7,15 @@ vext creates fridges for plants to grow in the most efficient way possible by pr
 - **planting guides**: get tips for planting various vegetables and fruits.
 - **to-do list**: keep track of tasks like cleaning the fridge or refilling the water tank.
 
+## 📸 Screenshots
+![alt text](https://github.com/fatihmerickoc/vext_app/blob/main/screenshots/mainScreen.png)
+![alt text](https://github.com/fatihmerickoc/vext_app/blob/main/screenshots/lightsScreen.png)
+![alt text](https://github.com/fatihmerickoc/vext_app/blob/main/screenshots/plantGuidesScreen.png)
+![alt text](https://github.com/fatihmerickoc/vext_app/blob/main/screenshots/plantGuidesInfoScreen.png)
+![alt text](https://github.com/fatihmerickoc/vext_app/blob/main/screenshots/statusScreen.png)
+![alt text](https://github.com/fatihmerickoc/vext_app/blob/main/screenshots/tasksScreen.png)
+
+
 ## 🛠️ Getting Started
 ### Prerequisites
 - Flutter SDK: [Install Flutter](https://docs.flutter.dev/get-started/install)
