@@ -13,11 +13,7 @@ class Tasks extends ConsumerStatefulWidget {
 }
 
 class _TasksState extends ConsumerState<Tasks> {
-  String _calendarText() {
-    return "Due in 0 days";
-  }
-
-  Widget _taskContainer(TaskModel task) {
+  Widget _taskContainer(TaskModel task, bool isFutureTask) {
     return Container(
       height: 100,
       margin: const EdgeInsets.only(
@@ -36,7 +32,7 @@ class _TasksState extends ConsumerState<Tasks> {
         children: [
           Row(
             children: [
-              _categoryContainer(task.task_category),
+              _taskCategoryContainer(task),
               Styles.width_15,
               const Icon(
                 Icons.calendar_today,
@@ -44,31 +40,33 @@ class _TasksState extends ConsumerState<Tasks> {
                 size: 18,
               ),
               Styles.width_5,
-              Text(
-                _calendarText(),
-                style: const TextStyle(fontSize: 13.0, color: Colors.grey),
-              )
+              _taskDueText(task),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                task.task_title,
+                task.task_name,
                 style: const TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const Icon(Icons.check_box_outline_blank),
+              InkWell(
+                  onTap: () => _completeTask(task, isFutureTask),
+                  child: const Icon(Icons.check_box_outline_blank)),
             ],
           ),
-          Text(
-            'Learn how',
-            style: Styles.subtitle_text.copyWith(
-              color: Colors.grey,
-              decoration: TextDecoration.underline,
-              decorationColor: Colors.grey,
+          InkWell(
+            onTap: () => debugPrint(task.task_description),
+            child: Text(
+              'Learn how',
+              style: Styles.subtitle_text.copyWith(
+                color: Colors.grey,
+                decoration: TextDecoration.underline,
+                decorationColor: Colors.grey,
+              ),
             ),
           ),
         ],
@@ -76,31 +74,38 @@ class _TasksState extends ConsumerState<Tasks> {
     );
   }
 
-  Widget _categoryContainer(String category) {
-    late Color color;
-    switch (category) {
-      case 'Device':
-        color = Colors.red.shade200;
-        break;
-      case 'Water':
-        color = Colors.blue.shade200;
-        break;
-      case "Plants":
-        color = Colors.green.shade200;
-        break;
-      default:
-        color = Colors.pink.shade200;
-    }
+  Widget _taskCategoryContainer(TaskModel task) {
     return Container(
       padding: const EdgeInsets.all(4.0),
       decoration: BoxDecoration(
-        color: color,
+        color: Color(int.parse(task.task_category_color)),
         borderRadius: BorderRadius.circular(5.0),
       ),
       child: Text(
-        category,
+        task.task_category,
         style: Styles.subtitle_text.copyWith(fontWeight: FontWeight.w500),
       ),
+    );
+  }
+
+  Widget _taskDueText(TaskModel task) {
+    String displayText = "";
+    DateTime now = DateTime.now();
+    int differenceInHours = task.task_dueDate.difference(now).inHours;
+
+    if (differenceInHours <= 24) {
+      displayText = "Due today";
+    } else if (differenceInHours > 24 && differenceInHours <= 48) {
+      displayText = "Due tomorrow";
+    } else {
+      int differenceInDays = task.task_dueDate.difference(now).inDays;
+
+      displayText = "Due in $differenceInDays days";
+    }
+
+    return Text(
+      displayText,
+      style: const TextStyle(fontSize: 13.0, color: Colors.grey),
     );
   }
 
@@ -141,7 +146,8 @@ class _TasksState extends ConsumerState<Tasks> {
                   itemCount: updatedVext.vext_tasks.length,
                   itemBuilder: (context, index) {
                     TaskModel task = updatedVext.vext_tasks[index];
-                    return _taskContainer(task);
+
+                    return _taskContainer(task, false);
                   },
                 ),
               ),
@@ -151,10 +157,11 @@ class _TasksState extends ConsumerState<Tasks> {
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: updatedVext.vext_completedTasks.length,
+                  itemCount: updatedVext.vext_futureTasks.length,
                   itemBuilder: (context, index) {
-                    TaskModel task = updatedVext.vext_completedTasks[index];
-                    return _taskContainer(task);
+                    TaskModel task = updatedVext.vext_futureTasks[index];
+
+                    return _taskContainer(task, true);
                   },
                 ),
               ),
@@ -163,5 +170,12 @@ class _TasksState extends ConsumerState<Tasks> {
         ),
       ),
     );
+  }
+
+  Future<void> _completeTask(TaskModel task, bool isFutureTask) async {
+    await ref
+        .watch(vextNotifierProvider.notifier)
+        .updateTask(task, isFutureTask);
+    setState(() {});
   }
 }

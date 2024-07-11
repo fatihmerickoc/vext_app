@@ -28,13 +28,14 @@ class VextNotifier extends _$VextNotifier {
       vext_turnOnTime: 0,
       vext_turnOffTime: 0,
       vext_tasks: [],
+      vext_futureTasks: [],
       vext_completedTasks: [],
     );
   }
 
   Future<void> fetchData() async {
     try {
-      final jsonData = await _apiService.fetchDataFromThingsBoard();
+      final jsonData = await _apiService.fetchDataForVextModel();
       final vext = VextModel.fromJson(jsonData);
       updateVext(vext);
     } catch (e) {
@@ -44,33 +45,29 @@ class VextNotifier extends _$VextNotifier {
 
   Future<void> updateLights(int sliderValue) async {
     await _apiService.setLightsFromSlider(sliderValue);
+
     if (state.vext_lightBrightness != sliderValue) {
-      state = VextModel(
-        vext_id: state.vext_id,
-        vext_network: state.vext_network,
-        vext_waterLevel: state.vext_waterLevel,
-        vext_lightBrightness: sliderValue,
-        vext_turnOnTime: state.vext_turnOnTime,
-        vext_turnOffTime: state.vext_turnOffTime,
-        vext_tasks: state.vext_tasks,
-        vext_completedTasks: state.vext_completedTasks,
-      );
+      state.vext_lightBrightness = sliderValue;
     }
   }
 
   Future<void> updateTimes(int turnOn, turnOFF) async {
     await _apiService.setTimeFromTimePicker(turnOn, turnOFF);
     if (state.vext_turnOnTime != turnOn || state.vext_turnOffTime != turnOFF) {
-      state = VextModel(
-        vext_id: state.vext_id,
-        vext_network: state.vext_network,
-        vext_waterLevel: state.vext_waterLevel,
-        vext_lightBrightness: state.vext_lightBrightness,
-        vext_turnOnTime: turnOn,
-        vext_turnOffTime: turnOFF,
-        vext_tasks: state.vext_tasks,
-        vext_completedTasks: state.vext_completedTasks,
-      );
+      state.vext_turnOnTime = turnOn;
+      state.vext_turnOffTime = turnOFF;
+    }
+  }
+
+  Future<void> updateTask(TaskModel task, bool isFutureTask) async {
+    await _apiService.setCompleteTasks(task);
+    if (!state.vext_completedTasks.contains(task)) {
+      state.vext_completedTasks.add(task);
+      if (isFutureTask) {
+        state.vext_futureTasks.remove(task);
+      } else {
+        state.vext_tasks.remove(task);
+      }
     }
   }
 

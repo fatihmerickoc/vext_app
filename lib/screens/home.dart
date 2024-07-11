@@ -17,11 +17,6 @@ class Home extends ConsumerStatefulWidget {
 }
 
 class _HomeState extends ConsumerState<Home> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   //method to create listTiles inside the drawer (My profile - Setting - Membership - Support )
   Widget _drawerTile({
     required String title,

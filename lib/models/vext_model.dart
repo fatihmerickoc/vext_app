@@ -11,22 +11,27 @@ class VextModel {
   int vext_turnOnTime;
   int vext_turnOffTime;
   List<TaskModel> vext_tasks;
+
+  //these values are not fetched, they are filtered from tasks
+  List<TaskModel> vext_futureTasks;
   List<TaskModel> vext_completedTasks;
+
   // bool vext_isLightOn;
   // bool vext_isCleaningModeOn;
   // String vext_plantStage;
   // List<String> vext_tasks;
 
-  VextModel({
-    required this.vext_id,
-    required this.vext_network,
-    required this.vext_waterLevel,
-    required this.vext_lightBrightness,
-    required this.vext_turnOnTime,
-    required this.vext_turnOffTime,
-    required this.vext_tasks,
-    required this.vext_completedTasks,
-  });
+  VextModel(
+      {required this.vext_id,
+      required this.vext_network,
+      required this.vext_waterLevel,
+      required this.vext_lightBrightness,
+      required this.vext_turnOnTime,
+      required this.vext_turnOffTime,
+      required this.vext_tasks,
+      required this.vext_futureTasks,
+      required this.vext_completedTasks,
+      req});
 
   factory VextModel.fromJson(Map<String, dynamic> json) {
     return VextModel(
@@ -36,25 +41,9 @@ class VextModel {
       vext_lightBrightness: json['middleRightLedBrightness'],
       vext_turnOnTime: json['turnOnTime'],
       vext_turnOffTime: json['turnOffTime'],
-      vext_tasks: [
-        TaskModel(
-          task_title: 'Plant new capsules',
-          task_dueDate: 1719848963,
-          task_category: 'Plants',
-        ),
-        TaskModel(
-          task_title: 'Refill water tank',
-          task_dueDate: 1728460163,
-          task_category: 'Water',
-        ),
-      ],
-      vext_completedTasks: [
-        TaskModel(
-          task_title: 'Sweep the lid',
-          task_dueDate: 1728460163,
-          task_category: 'Device',
-        ),
-      ],
+      vext_tasks: json['tasks'],
+      vext_futureTasks: json['tasks_future'],
+      vext_completedTasks: json['tasks_completed'],
     );
   }
 }

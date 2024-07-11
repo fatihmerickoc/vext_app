@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:vext_app/screens/home.dart';
 import 'package:vext_app/styles/styles.dart';
 
-void main() {
+Future<void> main() async {
+  await Supabase.initialize(
+    url: 'https://tlftvzpsqqprwfyqywbs.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsZnR2enBzcXFwcndmeXF5d2JzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjAxODYwOTEsImV4cCI6MjAzNTc2MjA5MX0.9faWaUyKpZRGGZC8Q_RCAOjgl6-pcPhiwWPdZUpli9Y',
+  );
   runApp(const ProviderScope(child: MyApp()));
 }
 

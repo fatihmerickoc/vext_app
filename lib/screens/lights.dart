@@ -1,9 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:interactive_slider/interactive_slider.dart';
 import 'package:vext_app/provider/vext_notifier.dart';
 import 'package:vext_app/styles/styles.dart';
 
