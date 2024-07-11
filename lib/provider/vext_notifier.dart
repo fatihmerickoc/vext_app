@@ -47,15 +47,34 @@ class VextNotifier extends _$VextNotifier {
     await _apiService.setLightsFromSlider(sliderValue);
 
     if (state.vext_lightBrightness != sliderValue) {
-      state.vext_lightBrightness = sliderValue;
+      state = VextModel(
+        vext_id: state.vext_id,
+        vext_network: state.vext_network,
+        vext_waterLevel: state.vext_waterLevel,
+        vext_lightBrightness: sliderValue,
+        vext_turnOnTime: state.vext_turnOnTime,
+        vext_turnOffTime: state.vext_turnOffTime,
+        vext_tasks: state.vext_tasks,
+        vext_futureTasks: state.vext_futureTasks,
+        vext_completedTasks: state.vext_completedTasks,
+      );
     }
   }
 
   Future<void> updateTimes(int turnOn, turnOFF) async {
     await _apiService.setTimeFromTimePicker(turnOn, turnOFF);
     if (state.vext_turnOnTime != turnOn || state.vext_turnOffTime != turnOFF) {
-      state.vext_turnOnTime = turnOn;
-      state.vext_turnOffTime = turnOFF;
+      state = VextModel(
+        vext_id: state.vext_id,
+        vext_network: state.vext_network,
+        vext_waterLevel: state.vext_waterLevel,
+        vext_lightBrightness: state.vext_lightBrightness,
+        vext_turnOnTime: turnOn,
+        vext_turnOffTime: turnOFF,
+        vext_tasks: state.vext_tasks,
+        vext_futureTasks: state.vext_futureTasks,
+        vext_completedTasks: state.vext_completedTasks,
+      );
     }
   }
 
