@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:thingsboard_client/thingsboard_client.dart';
-import 'package:gotrue/src/types/user.dart' as prefix;
+import 'package:vext_app/models/taskInfo_model.dart';
 import 'package:vext_app/models/task_model.dart';
 
 class ApiService {
@@ -14,12 +14,31 @@ class ApiService {
   static const username = 'fatih+tenant.admin@vext.fi';
   static const password = '782246Vext.';
   static const deviceId = '9cc4a980-0317-11ef-a0ef-7f542c4ca39c';
+  static const cabinetId = 'T00P00TEST0'; //FIXME: get this later from supabase
 
   final _tbClient = ThingsboardClient(thingsBoardApiEndpoint);
 
   final _sbClient = Supabase.instance.client;
 
+  List<TaskModel> taskList = [];
+  List<TaskInfoModel> taskInfoList = [];
+
   ApiService({required this.telemetryKeys, required this.attributeKeys});
+
+  //method to construct the vext model by fething/subscribing data from Thingsboard & Supabase
+  Future<Map<String, dynamic>> fetchDataForVextModel() async {
+    try {
+      final value = await _fetchDataFromThingsboard();
+      value['tasks'] = await _fetchTasksFromSupabase();
+
+      return value;
+    } catch (e, s) {
+      debugPrint('Error: $e');
+      debugPrint('Stack: $s');
+
+      return {};
+    }
+  }
 
   Future<List<TaskModel>> _fetchTasksFromSupabase() async {
     try {
@@ -28,18 +47,31 @@ class ApiService {
         password: '782246Supabase.',
       );
 
-      final taskData = await _sbClient.from('tasks').select();
-      List<TaskModel> taskList = [];
+      final task_infoData = await _sbClient.from('task_info').select();
+
+      for (var task_info in task_infoData) {
+        taskInfoList.add(TaskInfoModel.fromJson(task_info));
+      }
+
+      //filter tasks whose cabinet equals to user's cabinet
+      final taskData = await _sbClient.from('tasks').select().eq(
+            'cabinet',
+            cabinetId,
+          );
+
       for (var task in taskData) {
-        final task_infoData =
-            await _sbClient.from('task_info').select().eq('id', task['info']);
-        task['name'] = task_infoData.first['name'];
-        task['category'] = task_infoData.first['type'];
-        task['description'] = task_infoData.first['description'];
-        task['category_color'] = task_infoData.first['color'];
+        TaskInfoModel taskInfoModel =
+            taskInfoList.firstWhere((map) => map.id == task['info']);
+
+        task['name'] = taskInfoModel.name;
+        task['category'] = taskInfoModel.type;
+        task['description'] = taskInfoModel.description;
+        task['category_color'] = taskInfoModel.color;
 
         taskList.add(TaskModel.fromJson(task));
       }
+
+      taskList.sort((a, b) => a.task_dueDate.compareTo(b.task_dueDate));
 
       return taskList;
     } catch (e, s) {
@@ -145,20 +177,6 @@ class ApiService {
       debugPrint('Error: $e');
       debugPrint('Stack: $s');
       //await tbClient.logout();
-      return {};
-    }
-  }
-
-  //method to construct the vext model by fething/subscribing data from Thingsboard & Supabase
-  Future<Map<String, dynamic>> fetchDataForVextModel() async {
-    try {
-      final value = await _fetchDataFromThingsboard();
-      value['tasks'] = await _fetchTasksFromSupabase();
-      return value;
-    } catch (e, s) {
-      debugPrint('Error: $e');
-      debugPrint('Stack: $s');
-
       return {};
     }
   }

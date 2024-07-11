@@ -5,7 +5,6 @@ import 'package:vext_app/screens/home.dart';
 import 'package:vext_app/styles/styles.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
     url: 'https://tlftvzpsqqprwfyqywbs.supabase.co',
     anonKey:
