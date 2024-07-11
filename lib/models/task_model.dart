@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 class TaskModel {
+  final int task_id;
   final String task_name;
   final String task_category;
   final String task_category_color;
@@ -10,6 +11,7 @@ class TaskModel {
   final DateTime? task_completedDate; // completed date can be nullable
 
   TaskModel({
+    required this.task_id,
     required this.task_name,
     required this.task_category,
     required this.task_category_color,
@@ -21,6 +23,7 @@ class TaskModel {
 
   factory TaskModel.fromJson(Map<String, dynamic> json) {
     return TaskModel(
+      task_id: json['id'] ?? 0,
       task_name: json['name'] ?? "not-found",
       task_category: json['category'] ?? "not-found",
       task_category_color: json['category_color'] ?? "0xFF808080",

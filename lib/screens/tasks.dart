@@ -13,9 +13,7 @@ class Tasks extends ConsumerStatefulWidget {
 }
 
 class _TasksState extends ConsumerState<Tasks> {
-  List<TaskModel> futureTasks = [];
-
-  Widget _taskContainer(TaskModel task) {
+  Widget _taskContainer(TaskModel task, bool isFutureTask) {
     return Container(
       height: 100,
       margin: const EdgeInsets.only(
@@ -55,7 +53,9 @@ class _TasksState extends ConsumerState<Tasks> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const Icon(Icons.check_box_outline_blank),
+              InkWell(
+                  onTap: () => _completeTask(task, isFutureTask),
+                  child: const Icon(Icons.check_box_outline_blank)),
             ],
           ),
           InkWell(
@@ -147,7 +147,7 @@ class _TasksState extends ConsumerState<Tasks> {
                   itemBuilder: (context, index) {
                     TaskModel task = updatedVext.vext_tasks[index];
 
-                    return _taskContainer(task);
+                    return _taskContainer(task, false);
                   },
                 ),
               ),
@@ -157,10 +157,11 @@ class _TasksState extends ConsumerState<Tasks> {
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: futureTasks.length,
+                  itemCount: updatedVext.vext_futureTasks.length,
                   itemBuilder: (context, index) {
-                    TaskModel task = updatedVext.vext_completedTasks[index];
-                    return _taskContainer(task);
+                    TaskModel task = updatedVext.vext_futureTasks[index];
+
+                    return _taskContainer(task, true);
                   },
                 ),
               ),
@@ -169,5 +170,9 @@ class _TasksState extends ConsumerState<Tasks> {
         ),
       ),
     );
+  }
+
+  Future<void> _completeTask(TaskModel task, bool isFutureTask) async {
+    ref.watch(vextNotifierProvider.notifier).updateTask(task, isFutureTask);
   }
 }

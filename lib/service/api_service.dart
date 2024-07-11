@@ -21,6 +21,9 @@ class ApiService {
   final _sbClient = Supabase.instance.client;
 
   List<TaskModel> taskList = [];
+  List<TaskModel> taskFutureList = [];
+  List<TaskModel> taskCompletedList = [];
+
   List<TaskInfoModel> taskInfoList = [];
 
   ApiService({required this.telemetryKeys, required this.attributeKeys});
@@ -30,6 +33,8 @@ class ApiService {
     try {
       final value = await _fetchDataFromThingsboard();
       value['tasks'] = await _fetchTasksFromSupabase();
+      value['tasks_future'] = taskFutureList;
+      value['tasks_completed'] = taskCompletedList;
 
       return value;
     } catch (e, s) {
@@ -68,10 +73,23 @@ class ApiService {
         task['description'] = taskInfoModel.description;
         task['category_color'] = taskInfoModel.color;
 
-        taskList.add(TaskModel.fromJson(task));
+        TaskModel uploadTask = TaskModel.fromJson(task);
+
+        if (uploadTask.task_completedDate !=
+            DateTime.fromMillisecondsSinceEpoch(0)) {
+          taskCompletedList.add(uploadTask);
+        } else if (uploadTask.task_dueDate.difference(DateTime.now()).inDays >
+            7) {
+          taskFutureList.add(uploadTask);
+        } else {
+          taskList.add(uploadTask);
+        }
       }
 
+      //
       taskList.sort((a, b) => a.task_dueDate.compareTo(b.task_dueDate));
+      taskCompletedList.sort(
+          (a, b) => a.task_completedDate!.compareTo(b.task_completedDate!));
 
       return taskList;
     } catch (e, s) {
@@ -233,6 +251,11 @@ class ApiService {
       debugPrint('Stack: $s');
       // await tbClient.logout();
     }
+  }
+
+  Future<void> setCompleteTasks(TaskModel task) async {
+    await _sbClient.from('tasks').update(
+        {'completed_date': DateTime.now().toString()}).eq('id', task.task_id);
   }
 }
 
