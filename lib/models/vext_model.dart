@@ -37,7 +37,7 @@ class VextModel {
     return VextModel(
       vext_id: json['serialNumber'],
       vext_network: json['ssid'],
-      vext_waterLevel: 23, //double.parse(json['waterVolume']).round(),
+      vext_waterLevel: json['waterVolume'] ?? 20,
       vext_lightBrightness: json['middleRightLedBrightness'],
       vext_turnOnTime: json['turnOnTime'],
       vext_turnOffTime: json['turnOffTime'],

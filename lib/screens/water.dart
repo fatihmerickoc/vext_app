@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:vext_app/models/vext_model.dart';
 import 'package:vext_app/provider/vext_notifier.dart';
 import 'package:vext_app/styles/styles.dart';
 
@@ -12,23 +13,8 @@ class Water extends ConsumerStatefulWidget {
 }
 
 class _WaterState extends ConsumerState<Water> {
-  //method that builds a toggleswitch for the plantStageList (Seed - Growth - Mature)
-  Widget _plantStageList() {
-    return ToggleSwitch(
-      minWidth: 120,
-      minHeight: 50,
-      customTextStyles: const [Styles.body_text],
-      initialLabelIndex: 0,
-      totalSwitches: 3,
-      cornerRadius: 20,
-      inactiveBgColor: Colors.grey.shade300,
-      activeBgColor: [Colors.grey.shade200],
-      labels: const ['Seed', 'Growth', 'Mature'],
-    );
-  }
-
-  //method that produces boxes for different ingredients such as Water, Vitamin A and Vitamin B
-  Widget _statusBox({
+  // creates a box widget for displaying ingredient information
+  Widget _box({
     int flex = 1,
     required Color color,
     required String title,
@@ -44,9 +30,7 @@ class _WaterState extends ConsumerState<Water> {
             height: 300,
             decoration: BoxDecoration(
               color: Colors.grey.shade200,
-              borderRadius: const BorderRadius.all(
-                Radius.circular(30.0),
-              ),
+              borderRadius: const BorderRadius.all(Radius.circular(30.0)),
             ),
           ),
           Container(
@@ -62,7 +46,7 @@ class _WaterState extends ConsumerState<Water> {
               alignment: Alignment.bottomCenter,
               margin: const EdgeInsets.all(15.0),
               child: Text(
-                value.toString() + measureValue,
+                '$value$measureValue',
                 textAlign: TextAlign.center,
                 style: Styles.title_text.copyWith(
                   fontWeight: FontWeight.w500,
@@ -71,9 +55,8 @@ class _WaterState extends ConsumerState<Water> {
               ),
             ),
           ),
-          Container(
-            alignment: Alignment.center,
-            margin: const EdgeInsets.only(bottom: 250),
+          Positioned(
+            top: 20,
             child: Text(
               title,
               textAlign: TextAlign.center,
@@ -85,29 +68,21 @@ class _WaterState extends ConsumerState<Water> {
     );
   }
 
-  AlertDialog _alertDialog() {
-    return AlertDialog(
-      title: const Text(
-        'Refill Nutrients',
-        style: Styles.title_text,
-      ),
-      content: const Text(
-        'Set the estimated nutrient value',
-        style: Styles.body_text,
-      ),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () => Navigator.pop(context, 'Cancel'),
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () => Navigator.pop(context, 'OK'),
-          child: const Text('Done'),
-        ),
-      ],
+  // creates a ToggleSwitch widget for selecting plant stages
+  Widget _plantStageList() {
+    return ToggleSwitch(
+      minWidth: 120,
+      minHeight: 50,
+      customTextStyles: const [Styles.body_text],
+      initialLabelIndex: 0,
+      totalSwitches: 3,
+      inactiveBgColor: Styles.grey,
+      activeBgColor: [Styles.muddyGreen],
+      labels: const ['Seed', 'Growth', 'Mature'],
     );
   }
 
+  // Creates an AlertDialog widget with information about plant stages
   AlertDialog _infoDialog() {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
@@ -133,7 +108,7 @@ class _WaterState extends ConsumerState<Water> {
 
   @override
   Widget build(BuildContext context) {
-    final updatedVext = ref.read(vextNotifierProvider);
+    final updatedVext = ref.watch(vextNotifierProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -145,90 +120,103 @@ class _WaterState extends ConsumerState<Water> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                ),
-                child: Row(
-                  children: [
-                    _statusBox(
-                      title: 'Water',
-                      measureValue: 'L',
-                      value: updatedVext.vext_waterLevel,
-                      color: Styles.waterColour,
-                      flex: 2,
-                    ),
-                    Styles.width_5,
-                    _statusBox(
-                      title: 'A',
-                      measureValue: 'dL',
-                      value: 0,
-                      color: Styles.muddyGreen,
-                    ),
-                    Styles.width_5,
-                    _statusBox(
-                      title: 'B',
-                      measureValue: 'dL',
-                      value: 0,
-                      color: Styles.orange,
-                    ),
-                  ],
-                ),
-              ),
+              _buildIngredientBoxRow(updatedVext),
               Styles.height_15,
-              Container(
-                height: 130,
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Styles.white,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Plant Stage',
-                          style: Styles.drawer_text
-                              .copyWith(fontWeight: FontWeight.w500),
-                        ),
-                        InkWell(
-                          onTap: () => showDialog<String>(
-                            context: context,
-                            builder: (context) => _infoDialog(),
-                          ),
-                          child: const Icon(
-                            Icons.info_outline,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    _plantStageList(),
-                  ],
-                ),
-              ),
+              _buildPlantStageContainer(),
               const Spacer(),
-              TextButton(
-                onPressed: () => showDialog<String>(
+              _buildRefillNutrientsContainer(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIngredientBoxRow(VextModel updatedVext) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(30.0),
+      ),
+      child: Row(
+        children: [
+          _box(
+            title: 'Water',
+            measureValue: 'L',
+            value: updatedVext.vext_waterLevel,
+            color: Styles.waterColour,
+            flex: 2,
+          ),
+          Styles.width_5,
+          _box(
+            title: 'A',
+            measureValue: 'dL',
+            value: 0,
+            color: Styles.green,
+          ),
+          Styles.width_5,
+          _box(
+            title: 'B',
+            measureValue: 'dL',
+            value: 0,
+            color: Styles.orange,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPlantStageContainer() {
+    return Container(
+      height: 130,
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Styles.white,
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Plant Stage',
+                style: Styles.drawer_text.copyWith(fontWeight: FontWeight.w500),
+              ),
+              InkWell(
+                onTap: () => showDialog<String>(
                   context: context,
-                  builder: (context) => _alertDialog(),
+                  builder: (context) => _infoDialog(),
                 ),
-                child: Text(
-                  'Refill nutrients',
-                  style: Styles.title_text.copyWith(color: Styles.ligthBlack),
+                child: const Icon(
+                  Icons.info_outline,
+                  color: Colors.grey,
                 ),
               ),
             ],
           ),
-        ),
+          const Spacer(),
+          _plantStageList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRefillNutrientsContainer() {
+    return Container(
+      width: 200,
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: const Text(
+        'Refill nutrients',
+        textAlign: TextAlign.center,
+        style: Styles.body_text,
       ),
     );
   }

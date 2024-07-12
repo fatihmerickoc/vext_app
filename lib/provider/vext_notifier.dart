@@ -37,6 +37,7 @@ class VextNotifier extends _$VextNotifier {
     try {
       final jsonData = await _apiService.fetchDataForVextModel();
       final vext = VextModel.fromJson(jsonData);
+
       updateVext(vext);
     } catch (e) {
       print('Error fetching data: $e');
