@@ -8,12 +8,7 @@ vext creates fridges for plants to grow in the most efficient way possible by pr
 - **to-do list**: keep track of tasks like cleaning the fridge or refilling the water tank.
 
 ## 📸 Screenshots
-![alt text](https://github.com/fatihmerickoc/vext_app/blob/main/screenshots/mainScreen.png)
-![alt text](https://github.com/fatihmerickoc/vext_app/blob/main/screenshots/lightsScreen.png)
-![alt text](https://github.com/fatihmerickoc/vext_app/blob/main/screenshots/plantGuidesScreen.png)
-![alt text](https://github.com/fatihmerickoc/vext_app/blob/main/screenshots/plantGuidesInfoScreen.png)
-![alt text](https://github.com/fatihmerickoc/vext_app/blob/main/screenshots/statusScreen.png)
-![alt text](https://github.com/fatihmerickoc/vext_app/blob/main/screenshots/tasksScreen.png)
+coming soon....
 
 
 ## 🛠️ Getting Started
