@@ -3,7 +3,7 @@
 Welcome to the TODO list for vext_app! This document serves as a roadmap for the tasks and enhancements that are planned or currently in progress. By maintaining a TODO file, we can ensure that all contributors have a clear understanding of what needs to be done and can easily track the project's progress.
 
 ## 🚨 urgent:
-- **code the logic behind the setting nutrients & calculating how much nutrient is left**
+- **code the logic behind the setting nutrients**
 - **make the water screen prettier** 
 - **simplify backend while writing a proper documentation for the app**
 - **code a better way to show info boxes**

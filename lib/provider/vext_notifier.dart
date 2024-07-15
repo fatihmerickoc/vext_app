@@ -11,7 +11,12 @@ class VextNotifier extends _$VextNotifier {
   @override
   VextModel build() {
     _apiService = ApiService(
-      telemetryKeys: ['waterVolume', 'ssid'],
+      telemetryKeys: [
+        'waterVolume',
+        'ssid',
+        'nutrientAVolume',
+        'nutrientBVolume'
+      ],
       attributeKeys: [
         'serialNumber',
         'middleRightLedBrightness',
@@ -24,11 +29,13 @@ class VextNotifier extends _$VextNotifier {
     return VextModel(
       vext_id: '',
       vext_network: '',
-      vext_waterLevel: 0,
+      vext_waterVolume: 0,
       vext_lightBrightness: 0,
       vext_turnOnTime: 0,
       vext_turnOffTime: 0,
       vext_tasks: [],
+      vext_nutrientAVolume: 0,
+      vext_nutrientBVolume: 0,
       vext_plantStage: '',
       vext_futureTasks: [],
       vext_completedTasks: [],
@@ -53,11 +60,13 @@ class VextNotifier extends _$VextNotifier {
       state = VextModel(
         vext_id: state.vext_id,
         vext_network: state.vext_network,
-        vext_waterLevel: state.vext_waterLevel,
+        vext_waterVolume: state.vext_waterVolume,
         vext_lightBrightness: sliderValue,
         vext_turnOnTime: state.vext_turnOnTime,
         vext_turnOffTime: state.vext_turnOffTime,
         vext_tasks: state.vext_tasks,
+        vext_nutrientAVolume: state.vext_nutrientAVolume,
+        vext_nutrientBVolume: state.vext_nutrientBVolume,
         vext_plantStage: state.vext_plantStage,
         vext_futureTasks: state.vext_futureTasks,
         vext_completedTasks: state.vext_completedTasks,
@@ -71,11 +80,13 @@ class VextNotifier extends _$VextNotifier {
       state = VextModel(
         vext_id: state.vext_id,
         vext_network: state.vext_network,
-        vext_waterLevel: state.vext_waterLevel,
+        vext_waterVolume: state.vext_waterVolume,
         vext_lightBrightness: state.vext_lightBrightness,
         vext_turnOnTime: turnOn,
         vext_turnOffTime: turnOFF,
         vext_tasks: state.vext_tasks,
+        vext_nutrientAVolume: state.vext_nutrientAVolume,
+        vext_nutrientBVolume: state.vext_nutrientBVolume,
         vext_plantStage: state.vext_plantStage,
         vext_futureTasks: state.vext_futureTasks,
         vext_completedTasks: state.vext_completedTasks,
@@ -101,11 +112,13 @@ class VextNotifier extends _$VextNotifier {
       state = VextModel(
         vext_id: state.vext_id,
         vext_network: state.vext_network,
-        vext_waterLevel: state.vext_waterLevel,
+        vext_waterVolume: state.vext_waterVolume,
         vext_lightBrightness: state.vext_lightBrightness,
         vext_turnOnTime: state.vext_turnOnTime,
         vext_turnOffTime: state.vext_turnOffTime,
         vext_tasks: state.vext_tasks,
+        vext_nutrientAVolume: state.vext_nutrientAVolume,
+        vext_nutrientBVolume: state.vext_nutrientBVolume,
         vext_plantStage: selectedPlantStage,
         vext_futureTasks: state.vext_futureTasks,
         vext_completedTasks: state.vext_completedTasks,

@@ -19,9 +19,9 @@ class _WaterState extends ConsumerState<Water> {
   Widget _box({
     int flex = 1,
     required Color color,
+    required double height,
     required String title,
-    required int value,
-    required String measureValue,
+    required double value,
   }) {
     return Expanded(
       flex: flex,
@@ -36,7 +36,7 @@ class _WaterState extends ConsumerState<Water> {
             ),
           ),
           Container(
-            height: 200,
+            height: height,
             decoration: BoxDecoration(
               color: color,
               borderRadius: const BorderRadius.only(
@@ -48,7 +48,7 @@ class _WaterState extends ConsumerState<Water> {
               alignment: Alignment.bottomCenter,
               margin: const EdgeInsets.all(15.0),
               child: Text(
-                '$value$measureValue',
+                '${value.round()}',
                 textAlign: TextAlign.center,
                 style: Styles.title_text.copyWith(
                   fontWeight: FontWeight.w500,
@@ -143,6 +143,7 @@ class _WaterState extends ConsumerState<Water> {
   @override
   Widget build(BuildContext context) {
     final updatedVext = ref.watch(vextNotifierProvider);
+
     selectedPlantStage = updatedVext.vext_plantStage;
     return Scaffold(
       appBar: AppBar(
@@ -179,23 +180,23 @@ class _WaterState extends ConsumerState<Water> {
         children: [
           _box(
             title: 'Water',
-            measureValue: 'L',
-            value: updatedVext.vext_waterLevel,
+            height: updatedVext.vext_waterVolume * 15,
+            value: updatedVext.vext_waterVolume,
             color: Styles.waterColour,
             flex: 2,
           ),
           Styles.width_5,
           _box(
             title: 'A',
-            measureValue: 'dL',
-            value: 0,
+            height: updatedVext.vext_nutrientAVolume,
+            value: updatedVext.vext_nutrientAVolume,
             color: Styles.green,
           ),
           Styles.width_5,
           _box(
             title: 'B',
-            measureValue: 'dL',
-            value: 0,
+            height: updatedVext.vext_nutrientBVolume,
+            value: updatedVext.vext_nutrientBVolume,
             color: Styles.orange,
           ),
         ],
