@@ -82,7 +82,7 @@ class _WaterState extends ConsumerState<Water> {
     );
   }
 
-  // Creates an AlertDialog widget with information about plant stages
+  // creates an AlertDialog widget with information about plant stages
   AlertDialog _infoDialog() {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),

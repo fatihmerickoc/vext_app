@@ -21,23 +21,23 @@ class VextModel {
   // String vext_plantStage;
   // List<String> vext_tasks;
 
-  VextModel(
-      {required this.vext_id,
-      required this.vext_network,
-      required this.vext_waterLevel,
-      required this.vext_lightBrightness,
-      required this.vext_turnOnTime,
-      required this.vext_turnOffTime,
-      required this.vext_tasks,
-      required this.vext_futureTasks,
-      required this.vext_completedTasks,
-      req});
+  VextModel({
+    required this.vext_id,
+    required this.vext_network,
+    required this.vext_waterLevel,
+    required this.vext_lightBrightness,
+    required this.vext_turnOnTime,
+    required this.vext_turnOffTime,
+    required this.vext_tasks,
+    required this.vext_futureTasks,
+    required this.vext_completedTasks,
+  });
 
   factory VextModel.fromJson(Map<String, dynamic> json) {
     return VextModel(
       vext_id: json['serialNumber'],
       vext_network: json['ssid'],
-      vext_waterLevel: json['waterVolume'] ?? 20,
+      vext_waterLevel: 20,
       vext_lightBrightness: json['middleRightLedBrightness'],
       vext_turnOnTime: json['turnOnTime'],
       vext_turnOffTime: json['turnOffTime'],
