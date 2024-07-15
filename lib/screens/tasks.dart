@@ -174,7 +174,7 @@ class _TasksState extends ConsumerState<Tasks> {
 
   Future<void> _completeTask(TaskModel task, bool isFutureTask) async {
     await ref
-        .watch(vextNotifierProvider.notifier)
+        .read(vextNotifierProvider.notifier)
         .updateTask(task, isFutureTask);
     setState(() {});
   }

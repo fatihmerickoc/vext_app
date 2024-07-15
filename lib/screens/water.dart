@@ -13,6 +13,8 @@ class Water extends ConsumerStatefulWidget {
 }
 
 class _WaterState extends ConsumerState<Water> {
+  String selectedPlantStage = '';
+
   // creates a box widget for displaying ingredient information
   Widget _box({
     int flex = 1,
@@ -74,12 +76,44 @@ class _WaterState extends ConsumerState<Water> {
       minWidth: 120,
       minHeight: 50,
       customTextStyles: const [Styles.body_text],
-      initialLabelIndex: 0,
+      initialLabelIndex: _getInitialLabelIndex(selectedPlantStage),
       totalSwitches: 3,
       inactiveBgColor: Styles.grey,
-      activeBgColor: [Styles.muddyGreen],
+      activeBgColor: const [Styles.muddyGreen],
       labels: const ['Seed', 'Growth', 'Mature'],
+      onToggle: (index) {
+        switch (index) {
+          case 0:
+            selectedPlantStage = 'Seed';
+            break;
+          case 1:
+            selectedPlantStage = 'Growth';
+            break;
+          case 2:
+            selectedPlantStage = 'Mature';
+            break;
+          default:
+            selectedPlantStage = 'Seed';
+        }
+        ref
+            .read(vextNotifierProvider.notifier)
+            .updatePlantStage(selectedPlantStage);
+      },
     );
+  }
+
+  // This method calculates and returns the initial index of the label based on the provided parameters
+  int _getInitialLabelIndex(String selectedPlantStage) {
+    switch (selectedPlantStage) {
+      case 'Seed':
+        return 0;
+      case 'Growth':
+        return 1;
+      case 'Mature':
+        return 2;
+      default:
+        return 0;
+    }
   }
 
   // creates an AlertDialog widget with information about plant stages
@@ -109,6 +143,7 @@ class _WaterState extends ConsumerState<Water> {
   @override
   Widget build(BuildContext context) {
     final updatedVext = ref.watch(vextNotifierProvider);
+    selectedPlantStage = updatedVext.vext_plantStage;
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -169,15 +204,17 @@ class _WaterState extends ConsumerState<Water> {
   }
 
   Widget _buildPlantStageContainer() {
+    String text = "";
+
     return Container(
-      height: 130,
+      height: 150,
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: Styles.white,
         borderRadius: BorderRadius.circular(30),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -197,6 +234,10 @@ class _WaterState extends ConsumerState<Water> {
                 ),
               ),
             ],
+          ),
+          const Text(
+            'Set the stage of your plant',
+            style: Styles.body_text,
           ),
           const Spacer(),
           _plantStageList(),

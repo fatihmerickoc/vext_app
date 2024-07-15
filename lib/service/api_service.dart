@@ -257,6 +257,25 @@ class ApiService {
     await _sbClient.from('tasks').update(
         {'completed_date': DateTime.now().toString()}).eq('id', task.task_id);
   }
+
+  Future<void> setPlantStage(String plantStage) async {
+    try {
+      var foundDevice =
+          await _tbClient.getDeviceService().getDeviceInfo(deviceId);
+
+      // Save device shared attributes
+      await _tbClient.getAttributeService().saveEntityAttributesV2(
+          foundDevice!.id!, AttributeScope.SHARED_SCOPE.toShortString(), {
+        'plantStage': plantStage,
+      });
+
+      //   await tbClient.logout();
+    } catch (e, s) {
+      debugPrint('Error: $e');
+      debugPrint('Stack: $s');
+      // await tbClient.logout();
+    }
+  }
 }
 
 //to save updates

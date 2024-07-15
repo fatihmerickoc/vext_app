@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vext_app/models/plant_model.dart';
-import 'package:vext_app/models/task_model.dart';
 import 'package:vext_app/screens/lights.dart';
 import 'package:vext_app/screens/plant_guides.dart';
 import 'package:vext_app/screens/tasks.dart';
@@ -10,8 +9,8 @@ class AppData {
   final Map<String, IconData> homeItems = {
     'Tasks': Icons.checklist_rounded,
     'Plant\nGuides': Icons.egg_alt_outlined,
-    'Lights\n100%': Icons.wb_sunny_outlined,
-    'Refill in\n14 days': Icons.water_drop_outlined,
+    'Lights': Icons.wb_sunny_outlined,
+    'Water\nStatus': Icons.water_drop_outlined,
   };
 
   final homeRoutes = [

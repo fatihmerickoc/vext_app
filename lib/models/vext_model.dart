@@ -11,6 +11,7 @@ class VextModel {
   int vext_turnOnTime;
   int vext_turnOffTime;
   List<TaskModel> vext_tasks;
+  String vext_plantStage;
 
   //these values are not fetched, they are filtered from tasks
   List<TaskModel> vext_futureTasks;
@@ -18,7 +19,6 @@ class VextModel {
 
   // bool vext_isLightOn;
   // bool vext_isCleaningModeOn;
-  // String vext_plantStage;
   // List<String> vext_tasks;
 
   VextModel({
@@ -29,6 +29,7 @@ class VextModel {
     required this.vext_turnOnTime,
     required this.vext_turnOffTime,
     required this.vext_tasks,
+    required this.vext_plantStage,
     required this.vext_futureTasks,
     required this.vext_completedTasks,
   });
@@ -42,6 +43,7 @@ class VextModel {
       vext_turnOnTime: json['turnOnTime'],
       vext_turnOffTime: json['turnOffTime'],
       vext_tasks: json['tasks'],
+      vext_plantStage: json['plantStage'],
       vext_futureTasks: json['tasks_future'],
       vext_completedTasks: json['tasks_completed'],
     );

@@ -36,7 +36,7 @@ class LightsState extends ConsumerState<Lights> {
         }
       });
 
-      ref.watch(vextNotifierProvider.notifier).updateTimes(
+      ref.read(vextNotifierProvider.notifier).updateTimes(
             timeOfDayToMilliseconds(_turnOnAt),
             timeOfDayToMilliseconds(_turnOffAt),
           );

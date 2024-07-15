@@ -17,6 +17,7 @@ class VextNotifier extends _$VextNotifier {
         'middleRightLedBrightness',
         'turnOnTime',
         'turnOffTime',
+        'plantStage',
       ],
     );
     fetchData();
@@ -28,6 +29,7 @@ class VextNotifier extends _$VextNotifier {
       vext_turnOnTime: 0,
       vext_turnOffTime: 0,
       vext_tasks: [],
+      vext_plantStage: '',
       vext_futureTasks: [],
       vext_completedTasks: [],
     );
@@ -56,6 +58,7 @@ class VextNotifier extends _$VextNotifier {
         vext_turnOnTime: state.vext_turnOnTime,
         vext_turnOffTime: state.vext_turnOffTime,
         vext_tasks: state.vext_tasks,
+        vext_plantStage: state.vext_plantStage,
         vext_futureTasks: state.vext_futureTasks,
         vext_completedTasks: state.vext_completedTasks,
       );
@@ -73,6 +76,7 @@ class VextNotifier extends _$VextNotifier {
         vext_turnOnTime: turnOn,
         vext_turnOffTime: turnOFF,
         vext_tasks: state.vext_tasks,
+        vext_plantStage: state.vext_plantStage,
         vext_futureTasks: state.vext_futureTasks,
         vext_completedTasks: state.vext_completedTasks,
       );
@@ -88,6 +92,24 @@ class VextNotifier extends _$VextNotifier {
       } else {
         state.vext_tasks.remove(task);
       }
+    }
+  }
+
+  Future<void> updatePlantStage(String selectedPlantStage) async {
+    await _apiService.setPlantStage(selectedPlantStage);
+    if (state.vext_plantStage != selectedPlantStage) {
+      state = VextModel(
+        vext_id: state.vext_id,
+        vext_network: state.vext_network,
+        vext_waterLevel: state.vext_waterLevel,
+        vext_lightBrightness: state.vext_lightBrightness,
+        vext_turnOnTime: state.vext_turnOnTime,
+        vext_turnOffTime: state.vext_turnOffTime,
+        vext_tasks: state.vext_tasks,
+        vext_plantStage: selectedPlantStage,
+        vext_futureTasks: state.vext_futureTasks,
+        vext_completedTasks: state.vext_completedTasks,
+      );
     }
   }
 
