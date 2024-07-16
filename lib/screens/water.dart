@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:vext_app/data/app_data.dart';
+import 'package:vext_app/data/widget_data.dart';
 import 'package:vext_app/models/vext_model.dart';
 import 'package:vext_app/provider/vext_notifier.dart';
 import 'package:vext_app/styles/styles.dart';
@@ -116,30 +118,6 @@ class _WaterState extends ConsumerState<Water> {
     }
   }
 
-  // creates an AlertDialog widget with information about plant stages
-  AlertDialog _infoDialog() {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-      title: Text(
-        'WHAT?',
-        style: Styles.drawer_text.copyWith(fontWeight: FontWeight.w500),
-      ),
-      content: const Text(
-        'Seed: Gentle light and nutrients for germination.\n\nGrowth: Increased light and nutrients for development.\n\nMature: Balanced care for fully grown plants.',
-        style: Styles.body_text,
-      ),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () => Navigator.pop(context, 'Cancel'),
-          child: const Text(
-            'Done',
-            style: Styles.subtitle_text,
-          ),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final updatedVext = ref.watch(vextNotifierProvider);
@@ -180,7 +158,7 @@ class _WaterState extends ConsumerState<Water> {
         children: [
           _box(
             title: 'Water',
-            height: updatedVext.vext_waterVolume * 15,
+            height: (updatedVext.vext_waterVolume / 15) * 10,
             value: updatedVext.vext_waterVolume,
             color: Styles.waterColour,
             flex: 2,
@@ -227,7 +205,11 @@ class _WaterState extends ConsumerState<Water> {
               InkWell(
                 onTap: () => showDialog<String>(
                   context: context,
-                  builder: (context) => _infoDialog(),
+                  builder: (context) => WidgetData().infoDialog(
+                    context: context,
+                    title: 'Plant Stage',
+                    body: 'This is example plant stage text',
+                  ),
                 ),
                 child: const Icon(
                   Icons.info_outline,

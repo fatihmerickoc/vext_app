@@ -24,6 +24,7 @@ class VextNotifier extends _$VextNotifier {
         'turnOffTime',
         'plantStage',
       ],
+      durationOfFetching: const Duration(hours: 4),
     );
     fetchData();
     return VextModel(

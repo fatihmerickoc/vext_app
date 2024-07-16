@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vext_app/data/widget_data.dart';
 import 'package:vext_app/provider/vext_notifier.dart';
 import 'package:vext_app/styles/styles.dart';
 
@@ -130,29 +131,6 @@ class LightsState extends ConsumerState<Lights> {
     );
   }
 
-  AlertDialog _infoDialog() {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-      title: Text(
-        'WHY?',
-        style: Styles.drawer_text.copyWith(fontWeight: FontWeight.w500),
-      ),
-      content: const Text(
-        'The right amount of light helps plants reach their full potential and stay healthy. Giving you better results, and more to harvest!',
-        style: Styles.body_text,
-      ),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () => Navigator.pop(context, 'Cancel'),
-          child: const Text(
-            'Done',
-            style: Styles.subtitle_text,
-          ),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final updatedVext = ref.watch(vextNotifierProvider);
@@ -182,9 +160,11 @@ class LightsState extends ConsumerState<Lights> {
                       ),
                       InkWell(
                         onTap: () => showDialog<String>(
-                          context: context,
-                          builder: (context) => _infoDialog(),
-                        ),
+                            context: context,
+                            builder: (context) => WidgetData().infoDialog(
+                                context: context,
+                                title: 'Lights',
+                                body: 'This is lights body')),
                         child: const Icon(
                           Icons.info_outline,
                           color: Colors.grey,

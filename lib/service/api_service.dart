@@ -9,6 +9,7 @@ import 'package:vext_app/models/task_model.dart';
 class ApiService {
   final List<String> telemetryKeys;
   final List<String> attributeKeys;
+  final Duration durationOfFetching;
 
   static const thingsBoardApiEndpoint = 'https://thingsboard.vinicentus.net';
   static const username = 'fatih+tenant.admin@vext.fi';
@@ -26,7 +27,10 @@ class ApiService {
 
   List<TaskInfoModel> taskInfoList = [];
 
-  ApiService({required this.telemetryKeys, required this.attributeKeys});
+  ApiService(
+      {required this.telemetryKeys,
+      required this.attributeKeys,
+      required this.durationOfFetching});
 
   //method to construct the vext model by fething/subscribing data from Thingsboard & Supabase
   Future<Map<String, dynamic>> fetchDataForVextModel() async {
@@ -123,17 +127,16 @@ class ApiService {
         entityFields: deviceFields,
         latestValues: deviceTelemetry,
         pageLink: EntityDataPageLink(
-          pageSize: 10,
+          pageSize: telemetryKeys.length,
         ),
       );
 
       var currentTime = DateTime.now().millisecondsSinceEpoch;
-      var timeWindow = const Duration(hours: 2).inMilliseconds;
 
       var tsCmd = TimeSeriesCmd(
         keys: telemetryKeys,
-        startTs: currentTime - timeWindow,
-        timeWindow: timeWindow,
+        startTs: currentTime - durationOfFetching.inMilliseconds,
+        timeWindow: durationOfFetching.inMilliseconds,
         limit: 1,
       );
 

@@ -4,9 +4,7 @@ Welcome to the TODO list for vext_app! This document serves as a roadmap for the
 
 ## 🚨 urgent:
 - **code the logic behind the setting nutrients**
-- **make the water screen prettier** 
 - **simplify backend while writing a proper documentation for the app**
-- **code a better way to show info boxes**
 
 ## 🔜 later:
 - **push notifications** 
@@ -28,5 +26,7 @@ hours spent on debugginng: 46+
 - **null checker on the lights and rearrange the widgets**
 - **code the tasks screen ui** 
 - **code the logic for the tasks and archived tasks** 
+- **make the water screen prettier** 
+- **code a better way to show info boxes**
 
 
