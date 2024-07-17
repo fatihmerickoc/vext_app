@@ -3,14 +3,14 @@ import 'package:vext_app/models/plant_model.dart';
 import 'package:vext_app/screens/lights.dart';
 import 'package:vext_app/screens/plant_guides.dart';
 import 'package:vext_app/screens/tasks.dart';
-import 'package:vext_app/screens/water.dart';
+import 'package:vext_app/screens/status.dart';
 
 class AppData {
   final Map<String, IconData> homeItems = {
     'Tasks': Icons.checklist_rounded,
     'Plant\nGuides': Icons.egg_alt_outlined,
     'Lights': Icons.wb_sunny_outlined,
-    'Water\nStatus': Icons.water_drop_outlined,
+    'Status': Icons.water_drop_outlined,
   };
 
   final homeRoutes = [
