@@ -160,11 +160,13 @@ class LightsState extends ConsumerState<Lights> {
                       ),
                       InkWell(
                         onTap: () => showDialog<String>(
-                            context: context,
-                            builder: (context) => WidgetData().infoDialog(
-                                context: context,
-                                title: 'Lights',
-                                body: 'This is lights body')),
+                          context: context,
+                          builder: (context) => WidgetData().infoDialog(
+                              context: context,
+                              title: 'Why?',
+                              body:
+                                  'Plants need 14-16 hours of light daily because it gives them the energy to grow, stay healthy, and produce flowers or fruit. This light mimics natural sunlight, helping them thrive as they would in nature.'),
+                        ),
                         child: const Icon(
                           Icons.info_outline,
                           color: Colors.grey,

@@ -8,7 +8,7 @@ Welcome to the TODO list for vext_app! This document serves as a roadmap for the
 
 ## 🔜 later:
 - **push notifications** 
-̶- **create a sign-up page for users to create their own accounts through Authentik**
+̶- **create a sign-up page for users to create their own accounts through Supabase**
 - **pairing the app with the Vext cabinet(co-op with Vincent)**
 
 ## 🙃 if i have nothing to do:
