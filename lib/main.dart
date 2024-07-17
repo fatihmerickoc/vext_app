@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:vext_app/auth/login_auth.dart';
+import 'package:vext_app/auth/register_auth.dart';
 import 'package:vext_app/screens/home.dart';
 import 'package:vext_app/styles/styles.dart';
 
@@ -36,7 +38,12 @@ class MyApp extends StatelessWidget {
           background: Styles.backgroundColor,
         ),
       ),
-      home: const Home(),
+      routes: {
+        '/home': (context) => const Home(),
+        '/login': (context) => const LoginAuth(),
+        '/register': (context) => const RegisterAuth(),
+      },
+      home: const LoginAuth(),
     );
   }
 }

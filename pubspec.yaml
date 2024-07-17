@@ -56,6 +56,10 @@ flutter:
     - assets/plants/
 
   fonts:
+    - family: BebasNeue
+      fonts:
+        - asset: fonts/BebasNeue-Regular.ttf
+          weight: 400
     - family: Inter
       fonts:
         - asset: fonts/Inter-Light.ttf
