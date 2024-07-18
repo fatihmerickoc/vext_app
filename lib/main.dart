@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginAuth(),
         '/register': (context) => const RegisterAuth(),
       },
-      home: const LoginAuth(),
+      home: const RegisterAuth(),
     );
   }
 }

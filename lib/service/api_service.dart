@@ -51,11 +51,6 @@ class ApiService {
 
   Future<List<TaskModel>> _fetchTasksFromSupabase() async {
     try {
-      await _sbClient.auth.signInWithPassword(
-        email: 'fatihmerickoc@gmail.com',
-        password: '782246Supabase.',
-      );
-
       final task_infoData = await _sbClient.from('task_info').select();
 
       for (var task_info in task_infoData) {
