@@ -27,10 +27,11 @@ class ApiService {
 
   List<TaskInfoModel> taskInfoList = [];
 
-  ApiService(
-      {required this.telemetryKeys,
-      required this.attributeKeys,
-      required this.durationOfFetching});
+  ApiService({
+    required this.telemetryKeys,
+    required this.attributeKeys,
+    required this.durationOfFetching,
+  });
 
   //method to construct the vext model by fething/subscribing data from Thingsboard & Supabase
   Future<Map<String, dynamic>> fetchDataForVextModel() async {

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:vext_app/screens/auth/login_auth.dart';
-import 'package:vext_app/screens/auth/register_auth.dart';
+import 'package:vext_app/screens/auth_screens/login.dart';
+import 'package:vext_app/screens/auth_screens/register.dart';
 import 'package:vext_app/screens/home.dart';
 import 'package:vext_app/styles/styles.dart';
 
@@ -12,7 +13,9 @@ Future<void> main() async {
     anonKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsZnR2enBzcXFwcndmeXF5d2JzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjAxODYwOTEsImV4cCI6MjAzNTc2MjA5MX0.9faWaUyKpZRGGZC8Q_RCAOjgl6-pcPhiwWPdZUpli9Y',
   );
-  runApp(const ProviderScope(child: MyApp()));
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
+    (value) => runApp(const ProviderScope(child: MyApp())),
+  );
 }
 
 class MyApp extends StatelessWidget {

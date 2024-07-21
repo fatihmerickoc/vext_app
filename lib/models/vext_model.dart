@@ -41,7 +41,7 @@ class VextModel {
   factory VextModel.fromJson(Map<String, dynamic> json) {
     return VextModel(
       vext_id: json['serialNumber'],
-      vext_network: json['ssid'] ?? 'network-not-found',
+      vext_network: json['ssid'] ?? '',
       vext_waterVolume:
           json['waterVolume'] != null ? double.parse(json['waterVolume']) : 0.0,
       vext_lightBrightness: json['middleRightLedBrightness'],
