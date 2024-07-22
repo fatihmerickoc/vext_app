@@ -33,6 +33,7 @@ dependencies:
     sdk: flutter
   flutter_svg: ^2.0.10+1
   interactive_slider: ^0.2.2
+  loading_animation_widget: ^1.2.1
   provider: ^6.1.2
   supabase_flutter: ^2.5.7
   thingsboard_client: ^1.2.1

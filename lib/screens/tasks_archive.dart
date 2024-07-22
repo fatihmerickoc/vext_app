@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vext_app/models/task_model.dart';
-import 'package:vext_app/providers/vext_notifier.dart';
+import 'package:vext_app/providers/cabinet_provider.dart';
 import 'package:vext_app/styles/styles.dart';
 
 class TasksArchive extends StatefulWidget {
@@ -101,6 +102,8 @@ class _TasksArchiveState extends State<TasksArchive> {
 
   @override
   Widget build(BuildContext context) {
+    final cabinetProvider = Provider.of<CabinetProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Archive', style: Styles.appBar_text),
@@ -115,16 +118,18 @@ class _TasksArchiveState extends State<TasksArchive> {
                 'Completed Tasks',
                 style: Styles.drawer_text.copyWith(fontWeight: FontWeight.w500),
               ),
-              /*  Expanded(
+              Expanded(
                 child: ListView.builder(
-                  itemCount: updatedVext.vext_completedTasks.length,
+                  itemCount:
+                      cabinetProvider.cabinet.cabinet_completedTasks!.length,
                   itemBuilder: (context, index) {
-                    TaskModel task = updatedVext.vext_completedTasks[index];
+                    TaskModel task =
+                        cabinetProvider.cabinet.cabinet_completedTasks![index];
 
                     return _taskContainer(task);
                   },
                 ),
-              ),*/
+              ),
             ],
           ),
         ),

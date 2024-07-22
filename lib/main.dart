@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginAuth(),
         '/register': (context) => const RegisterAuth(),
       },
-      home: const RegisterAuth(),
+      home: const Home(),
     );
   }
 }

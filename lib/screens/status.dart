@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:vext_app/models/cabinet_model.dart';
+import 'package:vext_app/providers/cabinet_provider.dart';
 import 'package:vext_app/styles/styles.dart';
 
 class Water extends StatefulWidget {
@@ -15,6 +17,16 @@ class Water extends StatefulWidget {
 
 class _WaterState extends State<Water> {
   String selectedPlantStage = '';
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final cabinetProvider =
+        Provider.of<CabinetProvider>(context, listen: false);
+    setState(() {
+      selectedPlantStage = cabinetProvider.cabinet.cabinet_plantStage!;
+    });
+  }
 
   // creates a box widget for displaying ingredient information
   Widget _box({
@@ -96,10 +108,10 @@ class _WaterState extends State<Water> {
           default:
             selectedPlantStage = 'Seed';
         }
-        //filled-later
-        /*   ref
-            .read(vextNotifierProvider.notifier)
-            .updatePlantStage(selectedPlantStage);*/
+
+        final cabinetProvider =
+            Provider.of<CabinetProvider>(context, listen: false);
+        cabinetProvider.updateCabinetPlantStage(selectedPlantStage);
       },
     );
   }
@@ -172,8 +184,8 @@ class _WaterState extends State<Water> {
 
   @override
   Widget build(BuildContext context) {
-    //filled-later
-    selectedPlantStage = 'Growth';
+    final cabinetProvider = Provider.of<CabinetProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -186,9 +198,9 @@ class _WaterState extends State<Water> {
           padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16.0),
           child: Column(
             children: [
-              // _buildIngredientBoxRow(updatedVext),
-              Styles.height_15,
               _buildPlantStageContainer(),
+              Styles.height_15,
+              _buildIngredientBoxRow(cabinetProvider.cabinet),
               const Spacer(),
               _buildRefillNutrientsContainer(),
             ],
@@ -209,7 +221,7 @@ class _WaterState extends State<Water> {
         children: [
           _box(
             title: 'Water',
-            height: (updatedCabinet.cabinet_waterVolume! / 15) * 10,
+            height: updatedCabinet.cabinet_waterVolume! * 15,
             value: updatedCabinet.cabinet_waterVolume!,
             color: Styles.waterColour,
             flex: 2,

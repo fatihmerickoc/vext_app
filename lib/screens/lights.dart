@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
 import 'dart:io';
@@ -19,17 +19,24 @@ class Lights extends StatefulWidget {
 }
 
 class LightsState extends State<Lights> {
-  double _sliderValue = 50;
+  double _sliderValue = 0.0;
 
   TimeOfDay _turnOnAt = const TimeOfDay(hour: 0, minute: 0);
   TimeOfDay _turnOffAt = const TimeOfDay(hour: 0, minute: 0);
 
   @override
-  void initState() {
-    super.initState();
-    //filled-later
-    _turnOffAt = millisecondsToTimeOfDay(79200000);
-    _turnOnAt = millisecondsToTimeOfDay(21600000);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final cabinetProvider =
+        Provider.of<CabinetProvider>(context, listen: false);
+    setState(() {
+      _turnOffAt =
+          millisecondsToTimeOfDay(cabinetProvider.cabinet.cabinet_turnOffTime!);
+      _turnOnAt =
+          millisecondsToTimeOfDay(cabinetProvider.cabinet.cabinet_turnOnTime!);
+      _sliderValue =
+          cabinetProvider.cabinet.cabinet_lightBrightness!.toDouble();
+    });
   }
 
   Future<void> _showTimePicker(bool isTurningOn) async {
@@ -48,15 +55,16 @@ class LightsState extends State<Lights> {
         }
       });
 
-      //filled-later
-      /*ref.read(vextNotifierProvider.notifier).updateTimes(
-            timeOfDayToMilliseconds(_turnOnAt),
-            timeOfDayToMilliseconds(_turnOffAt),
-          );*/
+      final cabinetProvider =
+          Provider.of<CabinetProvider>(context, listen: false);
+      await cabinetProvider.updateCabinetSchedule(
+        timeOfDayToMilliseconds(_turnOnAt),
+        timeOfDayToMilliseconds(_turnOffAt),
+      );
     }
   }
 
-  Widget _timePickerButton(String value, bool isFrom) {
+  Widget _timePickerButton(bool isFrom) {
     return InkWell(
       onTap: () => _showTimePicker(isFrom),
       child: Container(
@@ -88,13 +96,13 @@ class LightsState extends State<Lights> {
           'From',
           style: Styles.subtitle_text,
         ),
-        _timePickerButton('6:00', true),
+        _timePickerButton(true),
         Styles.height_10,
         const Text(
           'To',
           style: Styles.subtitle_text,
         ),
-        _timePickerButton('22:00', false),
+        _timePickerButton(false),
       ],
     );
   }
@@ -119,8 +127,9 @@ class LightsState extends State<Lights> {
           });
           if (_debounce?.isActive ?? false) _debounce?.cancel();
           _debounce = Timer(const Duration(milliseconds: 100), () {
-            //filled-later
-            //ref.read(vextNotifierProvider.notifier).updateLights(value.round());
+            final cabinetProvider =
+                Provider.of<CabinetProvider>(context, listen: false);
+            cabinetProvider.updateCabinetLights(value.round());
           });
         },
       ),
@@ -198,8 +207,8 @@ class LightsState extends State<Lights> {
 
   @override
   Widget build(BuildContext context) {
-    CabinetProvider cabinetProvider = Provider.of<CabinetProvider>(context);
-    print("CabinetProvider: ${cabinetProvider.cabinet}");
+    final cabinetProvider = Provider.of<CabinetProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Lights', style: Styles.appBar_text),
@@ -254,7 +263,9 @@ class LightsState extends State<Lights> {
                     style: Styles.drawer_text
                         .copyWith(fontWeight: FontWeight.w500),
                   ),
-                  Text('Currently at fixed-later%', style: Styles.body_text),
+                  Text(
+                      'Currently at ${cabinetProvider.cabinet.cabinet_lightBrightness}%',
+                      style: Styles.body_text),
                   const Spacer(),
                   _slider(),
                 ],

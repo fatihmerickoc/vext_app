@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:vext_app/providers/vext_notifier.dart';
+import 'package:provider/provider.dart';
+import 'package:vext_app/providers/cabinet_provider.dart';
 import 'package:vext_app/styles/styles.dart';
 
 class Settings extends StatefulWidget {
@@ -37,6 +38,8 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
+    final cabinetProvider = Provider.of<CabinetProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -49,7 +52,8 @@ class _SettingsState extends State<Settings> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _settingsText('Network & Security'),
-            _settingsListTile('Wi-Fi Network', 'filled-later'),
+            _settingsListTile(
+                'Wi-Fi Network', cabinetProvider.cabinet.cabinet_network),
             _settingsText('Notifications'),
             _settingsListTile('Push Notifications', 'On'),
             _settingsText('Firmware Updates'),
@@ -57,7 +61,7 @@ class _SettingsState extends State<Settings> {
             _settingsText('Device Information'),
             ListTile(
               title: Text(
-                'Serial Number: filled-later',
+                'Serial Number: ${cabinetProvider.cabinet.cabinet_id}',
                 style: Styles.body_text.copyWith(fontWeight: FontWeight.w500),
               ),
               subtitle: const Text(
