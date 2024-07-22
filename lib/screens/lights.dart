@@ -1,26 +1,36 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vext_app/provider/vext_notifier.dart';
+import 'package:provider/provider.dart';
+import 'package:vext_app/providers/cabinet_provider.dart';
 import 'package:vext_app/styles/styles.dart';
 
 Timer? _debounce;
 
-class Lights extends ConsumerStatefulWidget {
+class Lights extends StatefulWidget {
   const Lights({super.key});
 
   @override
-  ConsumerState<Lights> createState() => LightsState();
+  State<Lights> createState() => LightsState();
 }
 
-class LightsState extends ConsumerState<Lights> {
-  double _sliderValue = 0;
+class LightsState extends State<Lights> {
+  double _sliderValue = 50;
 
   TimeOfDay _turnOnAt = const TimeOfDay(hour: 0, minute: 0);
   TimeOfDay _turnOffAt = const TimeOfDay(hour: 0, minute: 0);
+
+  @override
+  void initState() {
+    super.initState();
+    //filled-later
+    _turnOffAt = millisecondsToTimeOfDay(79200000);
+    _turnOnAt = millisecondsToTimeOfDay(21600000);
+  }
 
   Future<void> _showTimePicker(bool isTurningOn) async {
     final selectedTime = await showTimePicker(
@@ -38,10 +48,11 @@ class LightsState extends ConsumerState<Lights> {
         }
       });
 
-      ref.read(vextNotifierProvider.notifier).updateTimes(
+      //filled-later
+      /*ref.read(vextNotifierProvider.notifier).updateTimes(
             timeOfDayToMilliseconds(_turnOnAt),
             timeOfDayToMilliseconds(_turnOffAt),
-          );
+          );*/
     }
   }
 
@@ -108,7 +119,8 @@ class LightsState extends ConsumerState<Lights> {
           });
           if (_debounce?.isActive ?? false) _debounce?.cancel();
           _debounce = Timer(const Duration(milliseconds: 100), () {
-            ref.read(vextNotifierProvider.notifier).updateLights(value.round());
+            //filled-later
+            //ref.read(vextNotifierProvider.notifier).updateLights(value.round());
           });
         },
       ),
@@ -186,11 +198,8 @@ class LightsState extends ConsumerState<Lights> {
 
   @override
   Widget build(BuildContext context) {
-    final updatedVext = ref.watch(vextNotifierProvider);
-    _turnOffAt = millisecondsToTimeOfDay(updatedVext.vext_turnOffTime);
-    _turnOnAt = millisecondsToTimeOfDay(updatedVext.vext_turnOnTime);
-    _sliderValue = updatedVext.vext_lightBrightness.toDouble();
-
+    CabinetProvider cabinetProvider = Provider.of<CabinetProvider>(context);
+    print("CabinetProvider: ${cabinetProvider.cabinet}");
     return Scaffold(
       appBar: AppBar(
         title: const Text('Lights', style: Styles.appBar_text),
@@ -245,8 +254,7 @@ class LightsState extends ConsumerState<Lights> {
                     style: Styles.drawer_text
                         .copyWith(fontWeight: FontWeight.w500),
                   ),
-                  Text('Currently at ${updatedVext.vext_lightBrightness}%',
-                      style: Styles.body_text),
+                  Text('Currently at fixed-later%', style: Styles.body_text),
                   const Spacer(),
                   _slider(),
                 ],

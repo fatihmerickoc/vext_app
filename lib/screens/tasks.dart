@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vext_app/models/task_model.dart';
-import 'package:vext_app/provider/vext_notifier.dart';
 import 'package:vext_app/screens/tasks_archive.dart';
 import 'package:vext_app/styles/styles.dart';
 
-class Tasks extends ConsumerStatefulWidget {
+class Tasks extends StatefulWidget {
   const Tasks({super.key});
 
   @override
-  ConsumerState<Tasks> createState() => _TasksState();
+  State<Tasks> createState() => _TasksState();
 }
 
-class _TasksState extends ConsumerState<Tasks> {
+class _TasksState extends State<Tasks> {
   Widget _taskContainer(TaskModel task, bool isFutureTask) {
     return Container(
       height: 100,
@@ -111,7 +109,6 @@ class _TasksState extends ConsumerState<Tasks> {
 
   @override
   Widget build(BuildContext context) {
-    final updatedVext = ref.watch(vextNotifierProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -141,7 +138,7 @@ class _TasksState extends ConsumerState<Tasks> {
                 'This Week',
                 style: Styles.drawer_text.copyWith(fontWeight: FontWeight.w500),
               ),
-              Expanded(
+              /* Expanded(
                 child: ListView.builder(
                   itemCount: updatedVext.vext_tasks.length,
                   itemBuilder: (context, index) {
@@ -150,12 +147,12 @@ class _TasksState extends ConsumerState<Tasks> {
                     return _taskContainer(task, false);
                   },
                 ),
-              ),
+              ),*/
               Text(
                 'Upcoming Tasks',
                 style: Styles.drawer_text.copyWith(fontWeight: FontWeight.w500),
               ),
-              Expanded(
+              /*  Expanded(
                 child: ListView.builder(
                   itemCount: updatedVext.vext_futureTasks.length,
                   itemBuilder: (context, index) {
@@ -164,7 +161,7 @@ class _TasksState extends ConsumerState<Tasks> {
                     return _taskContainer(task, true);
                   },
                 ),
-              ),
+              ),*/
             ],
           ),
         ),
@@ -173,9 +170,10 @@ class _TasksState extends ConsumerState<Tasks> {
   }
 
   Future<void> _completeTask(TaskModel task, bool isFutureTask) async {
-    await ref
+    //filled-later
+    /* await ref
         .read(vextNotifierProvider.notifier)
-        .updateTask(task, isFutureTask);
+        .updateTask(task, isFutureTask);*/
     setState(() {});
   }
 }

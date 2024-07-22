@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vext_app/models/task_model.dart';
-import 'package:vext_app/provider/vext_notifier.dart';
+import 'package:vext_app/providers/vext_notifier.dart';
 import 'package:vext_app/styles/styles.dart';
 
-class TasksArchive extends ConsumerStatefulWidget {
+class TasksArchive extends StatefulWidget {
   const TasksArchive({super.key});
 
   @override
-  ConsumerState<TasksArchive> createState() => _TasksArchiveState();
+  State<TasksArchive> createState() => _TasksArchiveState();
 }
 
-class _TasksArchiveState extends ConsumerState<TasksArchive> {
+class _TasksArchiveState extends State<TasksArchive> {
   Widget _taskContainer(TaskModel task) {
     return Container(
       height: 100,
@@ -102,8 +101,6 @@ class _TasksArchiveState extends ConsumerState<TasksArchive> {
 
   @override
   Widget build(BuildContext context) {
-    final updatedVext = ref.watch(vextNotifierProvider);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Archive', style: Styles.appBar_text),
@@ -118,7 +115,7 @@ class _TasksArchiveState extends ConsumerState<TasksArchive> {
                 'Completed Tasks',
                 style: Styles.drawer_text.copyWith(fontWeight: FontWeight.w500),
               ),
-              Expanded(
+              /*  Expanded(
                 child: ListView.builder(
                   itemCount: updatedVext.vext_completedTasks.length,
                   itemBuilder: (context, index) {
@@ -127,7 +124,7 @@ class _TasksArchiveState extends ConsumerState<TasksArchive> {
                     return _taskContainer(task);
                   },
                 ),
-              ),
+              ),*/
             ],
           ),
         ),

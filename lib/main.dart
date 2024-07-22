@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:vext_app/providers/cabinet_provider.dart';
 import 'package:vext_app/screens/auth_screens/login.dart';
 import 'package:vext_app/screens/auth_screens/register.dart';
 import 'package:vext_app/screens/home.dart';
@@ -14,7 +15,12 @@ Future<void> main() async {
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsZnR2enBzcXFwcndmeXF5d2JzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjAxODYwOTEsImV4cCI6MjAzNTc2MjA5MX0.9faWaUyKpZRGGZC8Q_RCAOjgl6-pcPhiwWPdZUpli9Y',
   );
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
-    (value) => runApp(const ProviderScope(child: MyApp())),
+    (value) => runApp(
+      ChangeNotifierProvider(
+        create: (BuildContext context) => CabinetProvider(),
+        child: const MyApp(),
+      ),
+    ),
   );
 }
 

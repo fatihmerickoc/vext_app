@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart';
 import 'package:vext_app/data/app_data.dart';
-import 'package:vext_app/provider/vext_notifier.dart';
+import 'package:vext_app/models/cabinet_model.dart';
+import 'package:vext_app/providers/cabinet_provider.dart';
 
 import 'package:vext_app/screens/drawer_screens/membership.dart';
 import 'package:vext_app/screens/drawer_screens/profile.dart';
@@ -9,14 +10,14 @@ import 'package:vext_app/screens/drawer_screens/settings.dart';
 import 'package:vext_app/screens/drawer_screens/support.dart';
 import 'package:vext_app/styles/styles.dart';
 
-class Home extends ConsumerStatefulWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
 
   @override
-  ConsumerState<Home> createState() => _HomeState();
+  State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends ConsumerState<Home> {
+class _HomeState extends State<Home> {
   //method to create listTiles inside the drawer (My profile - Setting - Membership - Support )
   Widget _drawerTile({
     required String title,
@@ -81,8 +82,6 @@ class _HomeState extends ConsumerState<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final updatedVext = ref.watch(vextNotifierProvider);
-
     return Scaffold(
       drawer: Drawer(
         child: ListView(
@@ -136,7 +135,9 @@ class _HomeState extends ConsumerState<Home> {
                 child: Stack(
                   children: [
                     _menuButton(),
-                    Center(child: Image.asset('assets/plant_pod.png')),
+                    Center(
+                      child: Image.asset('assets/plant_pod.png'),
+                    ),
                   ],
                 ),
               ),
@@ -164,5 +165,11 @@ class _HomeState extends ConsumerState<Home> {
         ),
       ),
     );
+  }
+
+  Future<CabinetModel> _fetchCabinet() async {
+    CabinetProvider cabinetProvider = Provider.of<CabinetProvider>(context);
+    CabinetModel? cabinet = await cabinetProvider.fetchCabinet();
+    return cabinet!;
   }
 }

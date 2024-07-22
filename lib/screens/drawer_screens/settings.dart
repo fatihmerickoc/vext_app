@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vext_app/provider/vext_notifier.dart';
+import 'package:vext_app/providers/vext_notifier.dart';
 import 'package:vext_app/styles/styles.dart';
 
-class Settings extends ConsumerStatefulWidget {
+class Settings extends StatefulWidget {
   const Settings({super.key});
 
   @override
-  ConsumerState<Settings> createState() => _SettingsState();
+  State<Settings> createState() => _SettingsState();
 }
 
-class _SettingsState extends ConsumerState<Settings> {
+class _SettingsState extends State<Settings> {
   //method that produces widget with same size and boldness for settings page
   Widget _settingsText(String text) {
     return Padding(
@@ -38,8 +37,6 @@ class _SettingsState extends ConsumerState<Settings> {
 
   @override
   Widget build(BuildContext context) {
-    final updatedVext = ref.watch(vextNotifierProvider);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -52,7 +49,7 @@ class _SettingsState extends ConsumerState<Settings> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _settingsText('Network & Security'),
-            _settingsListTile('Wi-Fi Network', updatedVext.vext_network),
+            _settingsListTile('Wi-Fi Network', 'filled-later'),
             _settingsText('Notifications'),
             _settingsListTile('Push Notifications', 'On'),
             _settingsText('Firmware Updates'),
@@ -60,7 +57,7 @@ class _SettingsState extends ConsumerState<Settings> {
             _settingsText('Device Information'),
             ListTile(
               title: Text(
-                'Serial Number: ${updatedVext.vext_id}',
+                'Serial Number: filled-later',
                 style: Styles.body_text.copyWith(fontWeight: FontWeight.w500),
               ),
               subtitle: const Text(

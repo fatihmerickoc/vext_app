@@ -2,20 +2,18 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-import 'package:vext_app/models/vext_model.dart';
-import 'package:vext_app/provider/vext_notifier.dart';
+import 'package:vext_app/models/cabinet_model.dart';
 import 'package:vext_app/styles/styles.dart';
 
-class Water extends ConsumerStatefulWidget {
+class Water extends StatefulWidget {
   const Water({super.key});
 
   @override
-  ConsumerState<Water> createState() => _WaterState();
+  State<Water> createState() => _WaterState();
 }
 
-class _WaterState extends ConsumerState<Water> {
+class _WaterState extends State<Water> {
   String selectedPlantStage = '';
 
   // creates a box widget for displaying ingredient information
@@ -98,9 +96,10 @@ class _WaterState extends ConsumerState<Water> {
           default:
             selectedPlantStage = 'Seed';
         }
-        ref
+        //filled-later
+        /*   ref
             .read(vextNotifierProvider.notifier)
-            .updatePlantStage(selectedPlantStage);
+            .updatePlantStage(selectedPlantStage);*/
       },
     );
   }
@@ -173,9 +172,8 @@ class _WaterState extends ConsumerState<Water> {
 
   @override
   Widget build(BuildContext context) {
-    final updatedVext = ref.watch(vextNotifierProvider);
-
-    selectedPlantStage = updatedVext.vext_plantStage;
+    //filled-later
+    selectedPlantStage = 'Growth';
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -188,7 +186,7 @@ class _WaterState extends ConsumerState<Water> {
           padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16.0),
           child: Column(
             children: [
-              _buildIngredientBoxRow(updatedVext),
+              // _buildIngredientBoxRow(updatedVext),
               Styles.height_15,
               _buildPlantStageContainer(),
               const Spacer(),
@@ -200,7 +198,7 @@ class _WaterState extends ConsumerState<Water> {
     );
   }
 
-  Widget _buildIngredientBoxRow(VextModel updatedVext) {
+  Widget _buildIngredientBoxRow(CabinetModel updatedCabinet) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -211,23 +209,23 @@ class _WaterState extends ConsumerState<Water> {
         children: [
           _box(
             title: 'Water',
-            height: (updatedVext.vext_waterVolume / 15) * 10,
-            value: updatedVext.vext_waterVolume,
+            height: (updatedCabinet.cabinet_waterVolume! / 15) * 10,
+            value: updatedCabinet.cabinet_waterVolume!,
             color: Styles.waterColour,
             flex: 2,
           ),
           Styles.width_5,
           _box(
             title: 'A',
-            height: updatedVext.vext_nutrientAVolume,
-            value: updatedVext.vext_nutrientAVolume,
+            height: updatedCabinet.cabinet_nutrientAVolume!,
+            value: updatedCabinet.cabinet_nutrientAVolume!,
             color: Styles.green,
           ),
           Styles.width_5,
           _box(
             title: 'B',
-            height: updatedVext.vext_nutrientBVolume,
-            value: updatedVext.vext_nutrientBVolume,
+            height: updatedCabinet.cabinet_nutrientBVolume!,
+            value: updatedCabinet.cabinet_nutrientBVolume!,
             color: Styles.orange,
           ),
         ],

@@ -6,7 +6,7 @@ import 'package:thingsboard_client/thingsboard_client.dart';
 import 'package:vext_app/models/taskInfo_model.dart';
 import 'package:vext_app/models/task_model.dart';
 
-class ApiService {
+class CabinetService {
   final List<String> telemetryKeys;
   final List<String> attributeKeys;
   final Duration durationOfFetching;
@@ -27,7 +27,7 @@ class ApiService {
 
   List<TaskInfoModel> taskInfoList = [];
 
-  ApiService({
+  CabinetService({
     required this.telemetryKeys,
     required this.attributeKeys,
     required this.durationOfFetching,
@@ -42,11 +42,10 @@ class ApiService {
       value['tasks_completed'] = taskCompletedList;
 
       return value;
-    } catch (e, s) {
+    } catch (e) {
       debugPrint('Error: $e');
-      debugPrint('Stack: $s');
 
-      return {};
+      throw Exception('Failed to fetch data for vext model');
     }
   }
 
@@ -183,7 +182,7 @@ class ApiService {
 
       subscription.subscribe();
 
-      await Future.delayed(const Duration(milliseconds: 700));
+      await Future.delayed(const Duration(milliseconds: 200));
 
       subscription.unsubscribe();
       //await tbClient.logout();
