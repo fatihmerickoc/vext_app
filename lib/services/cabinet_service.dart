@@ -14,7 +14,7 @@ class CabinetService {
   static const thingsBoardApiEndpoint = 'https://thingsboard.vinicentus.net';
   static const username = 'fatih+tenant.admin@vext.fi';
   static const password = '782246Vext.';
-  static const deviceId = '7ffc0a50-0317-11ef-a0ef-7f542c4ca39c';
+  static const deviceId = '9cc4a980-0317-11ef-a0ef-7f542c4ca39c';
   static const cabinetId = 'T00P00TEST0'; //FIXME: get this later from supabase
 
   final _tbClient = ThingsboardClient(thingsBoardApiEndpoint);

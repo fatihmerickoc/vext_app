@@ -5,6 +5,8 @@ import 'package:vext_app/services/cabinet_service.dart';
 
 class CabinetProvider extends ChangeNotifier {
   CabinetModel _cabinet = CabinetModel();
+  CabinetModel get cabinet => _cabinet;
+
   final CabinetService _cabinetService = CabinetService(
     telemetryKeys: [
       'waterVolume',
@@ -21,8 +23,6 @@ class CabinetProvider extends ChangeNotifier {
     ],
     durationOfFetching: const Duration(hours: 4),
   );
-
-  CabinetModel get cabinet => _cabinet;
 
   Future<CabinetModel?> fetchCabinet() async {
     try {

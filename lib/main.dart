@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:vext_app/providers/cabinet_provider.dart';
+import 'package:vext_app/providers/user_provider.dart';
 import 'package:vext_app/screens/auth_screens/login.dart';
 import 'package:vext_app/screens/auth_screens/register.dart';
 import 'package:vext_app/screens/home.dart';
@@ -16,8 +17,17 @@ Future<void> main() async {
   );
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
     (value) => runApp(
-      ChangeNotifierProvider(
-        create: (BuildContext context) => CabinetProvider(),
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (BuildContext context) => UserProvider(),
+            child: const MyApp(),
+          ),
+          ChangeNotifierProvider(
+            create: (BuildContext context) => CabinetProvider(),
+            child: const MyApp(),
+          ),
+        ],
         child: const MyApp(),
       ),
     ),
@@ -52,7 +62,15 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginAuth(),
         '/register': (context) => const RegisterAuth(),
       },
-      home: const Home(),
+      home: Consumer<UserProvider>(
+        builder: (context, userProvider, _) {
+          if (userProvider.isAuthenticated) {
+            return const Home();
+          } else {
+            return const LoginAuth();
+          }
+        },
+      ),
     );
   }
 }

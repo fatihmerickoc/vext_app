@@ -40,23 +40,24 @@ class CabinetModel {
 
   factory CabinetModel.fromJson(Map<String, dynamic> json) {
     return CabinetModel(
-      cabinet_id: json['serialNumber'],
+      cabinet_id: json['serialNumber'] ?? '',
       cabinet_network: json['ssid'] ?? '',
-      cabinet_waterVolume:
-          json['waterVolume'] != null ? double.parse(json['waterVolume']) : 0.0,
-      cabinet_lightBrightness: json['middleRightLedBrightness'],
-      cabinet_turnOnTime: json['turnOnTime'],
-      cabinet_turnOffTime: json['turnOffTime'],
-      cabinet_tasks: json['tasks'],
-      cabinet_plantStage: json['plantStage'],
+      cabinet_waterVolume: json['waterVolume'] != null
+          ? double.tryParse(json['waterVolume'].toString()) ?? 0.0
+          : 0.0,
+      cabinet_lightBrightness: json['middleRightLedBrightness'] ?? 0,
+      cabinet_turnOnTime: json['turnOnTime'] ?? 0,
+      cabinet_turnOffTime: json['turnOffTime'] ?? 0,
+      cabinet_tasks: json['tasks'] ?? [],
+      cabinet_plantStage: json['plantStage'] ?? '',
       cabinet_nutrientAVolume: json['nutrientAVolume'] != null
-          ? double.parse(json['nutrientAVolume'])
+          ? double.tryParse(json['nutrientAVolume'].toString()) ?? 0.0
           : 0.0,
       cabinet_nutrientBVolume: json['nutrientBVolume'] != null
-          ? double.parse(json['nutrientBVolume'])
+          ? double.tryParse(json['nutrientBVolume'].toString()) ?? 0.0
           : 0.0,
-      cabinet_futureTasks: json['tasks_future'],
-      cabinet_completedTasks: json['tasks_completed'],
+      cabinet_futureTasks: json['tasks_future'] ?? [],
+      cabinet_completedTasks: json['tasks_completed'] ?? [],
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:vext_app/providers/user_provider.dart';
 import 'package:vext_app/styles/styles.dart';
 
 class RegisterAuth extends StatefulWidget {
@@ -31,7 +33,7 @@ class _RegisterAuthState extends State<RegisterAuth> {
 
   Future<void> _register() async {
     try {
-      final AuthResponse response = await supabase.auth.signUp(
+      final response = await supabase.auth.signUp(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
@@ -67,9 +69,9 @@ class _RegisterAuthState extends State<RegisterAuth> {
               style: Styles.title_text,
             ),
             Styles.height_30,
-            _registerTextField(_emailController),
+            _registerTextField(),
             Styles.height_15,
-            _registerTextField(_passwordController, isPassword: true),
+            _registerTextField(isPassword: true),
             Styles.height_20,
             _registerButton(),
             Styles.height_10,
@@ -80,8 +82,7 @@ class _RegisterAuthState extends State<RegisterAuth> {
     );
   }
 
-  Widget _registerTextField(TextEditingController controller,
-      {bool isPassword = false}) {
+  Widget _registerTextField({bool isPassword = false}) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20.0),
       decoration: BoxDecoration(
@@ -91,7 +92,7 @@ class _RegisterAuthState extends State<RegisterAuth> {
       ),
       child: TextField(
         obscureText: isPassword,
-        controller: controller,
+        controller: isPassword ? _passwordController : _emailController,
         keyboardType: isPassword
             ? TextInputType.visiblePassword
             : TextInputType.emailAddress,
@@ -105,9 +106,26 @@ class _RegisterAuthState extends State<RegisterAuth> {
   }
 
   Widget _registerButton() {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
     return GestureDetector(
-      onTap: () {
-        _register();
+      onTap: () async {
+        final isRegisterSuccessful = await userProvider.register(
+          _emailController.text.trim(),
+          _passwordController.text.trim(),
+        );
+        if (isRegisterSuccessful) {
+          //Save it to Shared Preferences and navigate to home
+
+          Navigator.pushNamed(context, '/home');
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              backgroundColor: Styles.darkGreen,
+              content: Text('Registration failed, please try again'),
+            ),
+          );
+        }
       },
       child: Container(
         padding: const EdgeInsets.all(15.0),
