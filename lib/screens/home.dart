@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 import 'package:vext_app/data/app_data.dart';
-import 'package:vext_app/provider/vext_notifier.dart';
+import 'package:vext_app/providers/cabinet_provider.dart';
 
 import 'package:vext_app/screens/drawer_screens/membership.dart';
 import 'package:vext_app/screens/drawer_screens/profile.dart';
@@ -9,14 +10,14 @@ import 'package:vext_app/screens/drawer_screens/settings.dart';
 import 'package:vext_app/screens/drawer_screens/support.dart';
 import 'package:vext_app/styles/styles.dart';
 
-class Home extends ConsumerStatefulWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
 
   @override
-  ConsumerState<Home> createState() => _HomeState();
+  State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends ConsumerState<Home> {
+class _HomeState extends State<Home> {
   //method to create listTiles inside the drawer (My profile - Setting - Membership - Support )
   Widget _drawerTile({
     required String title,
@@ -81,8 +82,6 @@ class _HomeState extends ConsumerState<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final updatedVext = ref.watch(vextNotifierProvider);
-
     return Scaffold(
       drawer: Drawer(
         child: ListView(
@@ -126,43 +125,68 @@ class _HomeState extends ConsumerState<Home> {
           ],
         ),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Column(
-            children: [
-              Expanded(
-                flex: 3,
-                child: Stack(
-                  children: [
-                    _menuButton(),
-                    Center(child: Image.asset('assets/plant_pod.png')),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisExtent: 80,
-                    mainAxisSpacing: 10.0,
-                    crossAxisSpacing: 10.0,
-                  ),
-                  itemCount: AppData().homeItems.length,
-                  itemBuilder: (context, index) {
-                    IconData icon = AppData().homeItems.values.elementAt(index);
-                    String text = AppData().homeItems.keys.elementAt(index);
+      body: _futureBuilder(),
+    );
+  }
 
-                    return _gridItem(text, icon, index);
-                  },
-                ),
+  Widget _futureBuilder() {
+    return FutureBuilder(
+      future: Provider.of<CabinetProvider>(
+        context,
+        listen: false,
+      ).fetchCabinet(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Stack(
+                      children: [
+                        _menuButton(),
+                        Center(
+                          child: Image.asset('assets/plant_pod.png'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisExtent: 80,
+                        mainAxisSpacing: 10.0,
+                        crossAxisSpacing: 10.0,
+                      ),
+                      itemCount: AppData().homeItems.length,
+                      itemBuilder: (context, index) {
+                        IconData icon =
+                            AppData().homeItems.values.elementAt(index);
+                        String text = AppData().homeItems.keys.elementAt(index);
+
+                        return _gridItem(text, icon, index);
+                      },
+                    ),
+                  ),
+                  Styles.height_20,
+                ],
               ),
-              Styles.height_20,
-            ],
-          ),
-        ),
-      ),
+            ),
+          );
+        } else {
+          return Center(
+            child: LoadingAnimationWidget.bouncingBall(
+              color: Styles.darkGreen,
+              size: 200,
+            ),
+          );
+        }
+      },
     );
   }
 }

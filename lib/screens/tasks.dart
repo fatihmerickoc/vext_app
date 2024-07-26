@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart';
 import 'package:vext_app/models/task_model.dart';
-import 'package:vext_app/provider/vext_notifier.dart';
+import 'package:vext_app/providers/cabinet_provider.dart';
 import 'package:vext_app/screens/tasks_archive.dart';
 import 'package:vext_app/styles/styles.dart';
 
-class Tasks extends ConsumerStatefulWidget {
+class Tasks extends StatefulWidget {
   const Tasks({super.key});
 
   @override
-  ConsumerState<Tasks> createState() => _TasksState();
+  State<Tasks> createState() => _TasksState();
 }
 
-class _TasksState extends ConsumerState<Tasks> {
+class _TasksState extends State<Tasks> {
   Widget _taskContainer(TaskModel task, bool isFutureTask) {
     return Container(
       height: 100,
@@ -111,7 +111,8 @@ class _TasksState extends ConsumerState<Tasks> {
 
   @override
   Widget build(BuildContext context) {
-    final updatedVext = ref.watch(vextNotifierProvider);
+    final cabinetProvider = Provider.of<CabinetProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -143,9 +144,10 @@ class _TasksState extends ConsumerState<Tasks> {
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: updatedVext.vext_tasks.length,
+                  itemCount: cabinetProvider.cabinet.cabinet_tasks!.length,
                   itemBuilder: (context, index) {
-                    TaskModel task = updatedVext.vext_tasks[index];
+                    TaskModel task =
+                        cabinetProvider.cabinet.cabinet_tasks![index];
 
                     return _taskContainer(task, false);
                   },
@@ -157,9 +159,11 @@ class _TasksState extends ConsumerState<Tasks> {
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: updatedVext.vext_futureTasks.length,
+                  itemCount:
+                      cabinetProvider.cabinet.cabinet_futureTasks!.length,
                   itemBuilder: (context, index) {
-                    TaskModel task = updatedVext.vext_futureTasks[index];
+                    TaskModel task =
+                        cabinetProvider.cabinet.cabinet_futureTasks![index];
 
                     return _taskContainer(task, true);
                   },
@@ -173,9 +177,10 @@ class _TasksState extends ConsumerState<Tasks> {
   }
 
   Future<void> _completeTask(TaskModel task, bool isFutureTask) async {
-    await ref
-        .read(vextNotifierProvider.notifier)
-        .updateTask(task, isFutureTask);
+    final cabinetProvider =
+        Provider.of<CabinetProvider>(context, listen: false);
+    cabinetProvider.updateCabinetTask(task, isFutureTask: isFutureTask);
+
     setState(() {});
   }
 }

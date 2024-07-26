@@ -1,12 +1,12 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:thingsboard_client/thingsboard_client.dart';
+import 'package:vext_app/main.dart';
 import 'package:vext_app/models/taskInfo_model.dart';
 import 'package:vext_app/models/task_model.dart';
 
-class ApiService {
+class CabinetService {
   final List<String> telemetryKeys;
   final List<String> attributeKeys;
   final Duration durationOfFetching;
@@ -14,12 +14,10 @@ class ApiService {
   static const thingsBoardApiEndpoint = 'https://thingsboard.vinicentus.net';
   static const username = 'fatih+tenant.admin@vext.fi';
   static const password = '782246Vext.';
-  static const deviceId = '7ffc0a50-0317-11ef-a0ef-7f542c4ca39c';
+  static const deviceId = '9cc4a980-0317-11ef-a0ef-7f542c4ca39c';
   static const cabinetId = 'T00P00TEST0'; //FIXME: get this later from supabase
 
   final _tbClient = ThingsboardClient(thingsBoardApiEndpoint);
-
-  final _sbClient = Supabase.instance.client;
 
   List<TaskModel> taskList = [];
   List<TaskModel> taskFutureList = [];
@@ -27,7 +25,7 @@ class ApiService {
 
   List<TaskInfoModel> taskInfoList = [];
 
-  ApiService({
+  CabinetService({
     required this.telemetryKeys,
     required this.attributeKeys,
     required this.durationOfFetching,
@@ -42,24 +40,23 @@ class ApiService {
       value['tasks_completed'] = taskCompletedList;
 
       return value;
-    } catch (e, s) {
+    } catch (e) {
       debugPrint('Error: $e');
-      debugPrint('Stack: $s');
 
-      return {};
+      throw Exception('Failed to fetch data for vext model');
     }
   }
 
   Future<List<TaskModel>> _fetchTasksFromSupabase() async {
     try {
-      final task_infoData = await _sbClient.from('task_info').select();
+      final task_infoData = await supabase.from('task_info').select();
 
       for (var task_info in task_infoData) {
         taskInfoList.add(TaskInfoModel.fromJson(task_info));
       }
 
       //filter tasks whose cabinet equals to user's cabinet
-      final taskData = await _sbClient.from('tasks').select().eq(
+      final taskData = await supabase.from('tasks').select().eq(
             'cabinet',
             cabinetId,
           );
@@ -183,7 +180,7 @@ class ApiService {
 
       subscription.subscribe();
 
-      await Future.delayed(const Duration(milliseconds: 700));
+      await Future.delayed(const Duration(milliseconds: 200));
 
       subscription.unsubscribe();
       //await tbClient.logout();
@@ -253,7 +250,7 @@ class ApiService {
   }
 
   Future<void> setCompleteTasks(TaskModel task) async {
-    await _sbClient.from('tasks').update(
+    await supabase.from('tasks').update(
         {'completed_date': DateTime.now().toString()}).eq('id', task.task_id);
   }
 

@@ -31,10 +31,11 @@ dependencies:
   cupertino_icons: ^1.0.6
   flutter:
     sdk: flutter
-  flutter_riverpod: ^2.5.1
   flutter_svg: ^2.0.10+1
   interactive_slider: ^0.2.2
-  riverpod_annotation: ^2.3.5
+  loading_animation_widget: ^1.2.1
+  provider: ^6.1.2
+  shared_preferences: ^2.2.3
   supabase_flutter: ^2.5.7
   thingsboard_client: ^1.2.1
   toggle_switch: ^2.3.0
@@ -45,8 +46,6 @@ dev_dependencies:
   flutter_lints: ^4.0.0
   flutter_test:
     sdk: flutter
-  riverpod_generator: ^2.4.0
-  riverpod_lint: ^2.3.10
 
 flutter:
   uses-material-design: true

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:vext_app/main.dart';
+import 'package:vext_app/providers/user_provider.dart';
 import 'package:vext_app/styles/styles.dart';
 
 class LoginAuth extends StatefulWidget {
@@ -13,8 +15,6 @@ class _LoginAuthState extends State<LoginAuth> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
 
-  final supabase = Supabase.instance.client;
-
   @override
   void initState() {
     super.initState();
@@ -27,24 +27,6 @@ class _LoginAuthState extends State<LoginAuth> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
-  }
-
-  Future<void> _login() async {
-    try {
-      final AuthResponse response = await supabase.auth.signInWithPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
-
-      if (response.user != null) {
-        print('User logged in successfully');
-      } else {
-        print('Login error');
-      }
-    } catch (e, s) {
-      print('Error: $e');
-      print('Stacktrace: $s');
-    }
   }
 
   @override
@@ -87,6 +69,8 @@ class _LoginAuthState extends State<LoginAuth> {
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: TextField(
+        obscureText: isPassword,
+        controller: isPassword ? _passwordController : _emailController,
         keyboardType: isPassword
             ? TextInputType.visiblePassword
             : TextInputType.emailAddress,
@@ -100,9 +84,24 @@ class _LoginAuthState extends State<LoginAuth> {
   }
 
   Widget _loginButton() {
+    final userProvider = Provider.of<UserProvider>(context, listen: true);
+
     return GestureDetector(
-      onTap: () {
-        _login();
+      onTap: () async {
+        if (userProvider.isLoading) return;
+        final isLoginSuccessful = await userProvider.logIn(
+          _emailController.text.trim(),
+          _passwordController.text.trim(),
+        );
+        _emailController.clear();
+        _passwordController.clear();
+
+        if (isLoginSuccessful) {
+          context.showSnackBar('Login successful');
+          Navigator.pushReplacementNamed(context, '/home');
+        } else {
+          context.showSnackBar('Login failed, please try again', isError: true);
+        }
       },
       child: Container(
         padding: const EdgeInsets.all(15.0),
@@ -112,13 +111,17 @@ class _LoginAuthState extends State<LoginAuth> {
           borderRadius: BorderRadius.circular(12.0),
         ),
         child: Center(
-          child: Text(
-            'Sign In',
-            style: Styles.title_text.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+          child: userProvider.isLoading
+              ? const CircularProgressIndicator(
+                  color: Styles.white,
+                )
+              : Text(
+                  'Sign In',
+                  style: Styles.title_text.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
         ),
       ),
     );
