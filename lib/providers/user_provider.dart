@@ -6,13 +6,15 @@ class UserProvider extends ChangeNotifier {
   UserModel _user = UserModel();
   UserModel get user => _user;
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
   final AuthService _authService = AuthService();
 
-  bool get isAuthenticated {
-    return _user.user_id != null;
-  }
-
   Future<bool> register(String email, password) async {
+    _isLoading = true;
+    notifyListeners();
+
     try {
       final fetchedUser = await _authService.registerUser(email, password);
 
@@ -22,33 +24,51 @@ class UserProvider extends ChangeNotifier {
         return true;
       }
     } catch (e) {
-      print('Catched an error registering user : $e');
+      print('Caught an error registering user: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
+
     return false;
   }
 
   Future<bool> logIn(String email, String password) async {
+    _isLoading = true;
+    notifyListeners();
+
     try {
       final fetchedUser = await _authService.logInUser(email, password);
 
       if (fetchedUser != null) {
         _user = fetchedUser;
+
         notifyListeners();
         return true;
       }
     } catch (e) {
-      print('Catched an error logging in: $e');
+      print('Caught an error logging in: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
+
     return false;
   }
 
   Future<void> logOut() async {
+    _isLoading = true;
+    notifyListeners();
+
     try {
       await _authService.logOutUser();
       _user = UserModel();
       notifyListeners();
     } catch (e) {
-      print('Catched an error logging out : $e');
+      print('Caught an error logging out: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
 }

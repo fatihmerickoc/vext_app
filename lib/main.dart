@@ -34,6 +34,8 @@ Future<void> main() async {
   );
 }
 
+final supabase = Supabase.instance.client;
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -62,14 +64,19 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginAuth(),
         '/register': (context) => const RegisterAuth(),
       },
-      home: Consumer<UserProvider>(
-        builder: (context, userProvider, _) {
-          if (userProvider.isAuthenticated) {
-            return const Home();
-          } else {
-            return const LoginAuth();
-          }
-        },
+      home: supabase.auth.currentSession == null
+          ? const LoginAuth()
+          : const Home(),
+    );
+  }
+}
+
+extension ContextExtension on BuildContext {
+  void showSnackBar(String message, {bool isError = false}) {
+    ScaffoldMessenger.of(this).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Styles.red : Styles.darkGreen,
       ),
     );
   }

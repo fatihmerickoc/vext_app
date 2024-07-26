@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:vext_app/main.dart';
 import 'package:vext_app/providers/user_provider.dart';
+import 'package:vext_app/screens/home.dart';
 import 'package:vext_app/styles/styles.dart';
 
 class RegisterAuth extends StatefulWidget {
@@ -15,13 +19,33 @@ class _RegisterAuthState extends State<RegisterAuth> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
 
-  final supabase = Supabase.instance.client;
+  late final StreamSubscription<AuthState> _authStateSubscription;
+  bool _redirecting = false;
 
   @override
   void initState() {
     super.initState();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
+    _authStateSubscription = supabase.auth.onAuthStateChange.listen(
+      (data) {
+        if (_redirecting) return;
+        final session = data.session;
+        if (session != null) {
+          _redirecting = true;
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const Home()),
+          );
+        }
+      },
+      onError: (error) {
+        if (error is AuthException) {
+          context.showSnackBar(error.message, isError: true);
+        } else {
+          context.showSnackBar('Unexpected error occurred', isError: true);
+        }
+      },
+    );
   }
 
   @override
@@ -29,24 +53,6 @@ class _RegisterAuthState extends State<RegisterAuth> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
-  }
-
-  Future<void> _register() async {
-    try {
-      final response = await supabase.auth.signUp(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
-
-      if (response.user != null) {
-        print('User registered successfully');
-      } else {
-        print(' Resgistration error');
-      }
-    } catch (e, s) {
-      print('Error: $e');
-      print('Stacktrace: $s');
-    }
   }
 
   @override
@@ -106,24 +112,23 @@ class _RegisterAuthState extends State<RegisterAuth> {
   }
 
   Widget _registerButton() {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final userProvider = Provider.of<UserProvider>(context, listen: true);
 
     return GestureDetector(
       onTap: () async {
+        if (userProvider.isLoading) return;
+
         final isRegisterSuccessful = await userProvider.register(
           _emailController.text.trim(),
           _passwordController.text.trim(),
         );
         if (isRegisterSuccessful) {
-          //Save it to Shared Preferences and navigate to home
-
-          Navigator.pushNamed(context, '/home');
+          context
+              .showSnackBar('Please, check your email to verify your account');
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              backgroundColor: Styles.darkGreen,
-              content: Text('Registration failed, please try again'),
-            ),
+          context.showSnackBar(
+            'Registration failed, please try again',
+            isError: true,
           );
         }
       },
@@ -135,13 +140,17 @@ class _RegisterAuthState extends State<RegisterAuth> {
           borderRadius: BorderRadius.circular(12.0),
         ),
         child: Center(
-          child: Text(
-            'Sign Up',
-            style: Styles.title_text.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+          child: userProvider.isLoading
+              ? const CircularProgressIndicator(
+                  color: Styles.white,
+                )
+              : Text(
+                  'Sign Up',
+                  style: Styles.title_text.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
         ),
       ),
     );

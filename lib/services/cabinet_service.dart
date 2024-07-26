@@ -1,8 +1,8 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:thingsboard_client/thingsboard_client.dart';
+import 'package:vext_app/main.dart';
 import 'package:vext_app/models/taskInfo_model.dart';
 import 'package:vext_app/models/task_model.dart';
 
@@ -18,8 +18,6 @@ class CabinetService {
   static const cabinetId = 'T00P00TEST0'; //FIXME: get this later from supabase
 
   final _tbClient = ThingsboardClient(thingsBoardApiEndpoint);
-
-  final _sbClient = Supabase.instance.client;
 
   List<TaskModel> taskList = [];
   List<TaskModel> taskFutureList = [];
@@ -51,14 +49,14 @@ class CabinetService {
 
   Future<List<TaskModel>> _fetchTasksFromSupabase() async {
     try {
-      final task_infoData = await _sbClient.from('task_info').select();
+      final task_infoData = await supabase.from('task_info').select();
 
       for (var task_info in task_infoData) {
         taskInfoList.add(TaskInfoModel.fromJson(task_info));
       }
 
       //filter tasks whose cabinet equals to user's cabinet
-      final taskData = await _sbClient.from('tasks').select().eq(
+      final taskData = await supabase.from('tasks').select().eq(
             'cabinet',
             cabinetId,
           );
@@ -252,7 +250,7 @@ class CabinetService {
   }
 
   Future<void> setCompleteTasks(TaskModel task) async {
-    await _sbClient.from('tasks').update(
+    await supabase.from('tasks').update(
         {'completed_date': DateTime.now().toString()}).eq('id', task.task_id);
   }
 
