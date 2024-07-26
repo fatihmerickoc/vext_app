@@ -28,23 +28,28 @@ class _RegisterAuthState extends State<RegisterAuth> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _authStateSubscription = supabase.auth.onAuthStateChange.listen(
-      (data) {
-        if (_redirecting) return;
-        final session = data.session;
-        if (session != null) {
-          _redirecting = true;
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const Home()),
-          );
-        }
-      },
-      onError: (error) {
-        if (error is AuthException) {
-          context.showSnackBar(error.message, isError: true);
-        } else {
-          context.showSnackBar('Unexpected error occurred', isError: true);
-        }
-      },
+      _handleAuthStateChange,
+      onError: _handleAuthError,
+    );
+  }
+
+  void _handleAuthStateChange(AuthState data) {
+    if (_redirecting) return;
+    final session = data.session;
+    if (session != null) {
+      _redirecting = true;
+      context.showSnackBar('Email confirmed successfully, logging you in');
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const Home()),
+      );
+    }
+  }
+
+  void _handleAuthError(error) {
+    _authStateSubscription.cancel();
+    context.showSnackBar(
+      'An error occurred confirming your email, please try to log in instead',
+      isError: true,
     );
   }
 
@@ -52,6 +57,7 @@ class _RegisterAuthState extends State<RegisterAuth> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _authStateSubscription.cancel();
     super.dispose();
   }
 
@@ -81,7 +87,7 @@ class _RegisterAuthState extends State<RegisterAuth> {
             Styles.height_20,
             _registerButton(),
             Styles.height_10,
-            _registerLoginText()
+            _registerLoginText(),
           ],
         ),
       ),
@@ -112,16 +118,26 @@ class _RegisterAuthState extends State<RegisterAuth> {
   }
 
   Widget _registerButton() {
-    final userProvider = Provider.of<UserProvider>(context, listen: true);
+    final userProvider = Provider.of<UserProvider>(context);
 
     return GestureDetector(
       onTap: () async {
         if (userProvider.isLoading) return;
 
-        final isRegisterSuccessful = await userProvider.register(
-          _emailController.text.trim(),
-          _passwordController.text.trim(),
-        );
+        final email = _emailController.text.trim();
+        final password = _passwordController.text.trim();
+
+        if (email.isEmpty || password.isEmpty) {
+          context.showSnackBar('Email and password cannot be empty',
+              isError: true);
+          return;
+        }
+
+        final isRegisterSuccessful =
+            await userProvider.register(email, password);
+        _emailController.clear();
+        _passwordController.clear();
+
         if (isRegisterSuccessful) {
           context
               .showSnackBar('Please, check your email to verify your account');

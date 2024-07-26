@@ -93,6 +93,9 @@ class _LoginAuthState extends State<LoginAuth> {
           _emailController.text.trim(),
           _passwordController.text.trim(),
         );
+        _emailController.clear();
+        _passwordController.clear();
+
         if (isLoginSuccessful) {
           context.showSnackBar('Login successful');
           Navigator.pushReplacementNamed(context, '/home');

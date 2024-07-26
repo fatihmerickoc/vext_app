@@ -12,7 +12,6 @@ class AuthService {
           emailRedirectTo: 'fi.vext.vextapp://register-callback/');
 
       if (response.user != null) {
-        print('User registered successfully');
         return UserModel(
           user_id: response.user!.id,
           user_email: response.user!.email ?? '',
