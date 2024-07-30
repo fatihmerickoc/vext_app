@@ -4,12 +4,12 @@ Welcome to the TODO list for vext_app! This document serves as a roadmap for the
 
 ## 🚨 urgent:
 - **code the logic for getting the assigned cabinet for authenticated user**
-- **code the logic behind the setting nutrients**
-- **simplify backend while writing a proper documentation for the app**
+- **push notifications** 
 
 ## 🔜 later:
-- **push notifications** 
 - **pairing the app with the Vext cabinet(co-op with Vincent)**
+- **simplify backend while writing a proper documentation for the app**
+- **code the logic behind the setting nutrients**
 
 ## 🙃 if i have nothing to do:
 - **come up with text for plant guides** 
@@ -17,7 +17,7 @@ Welcome to the TODO list for vext_app! This document serves as a roadmap for the
 ## 💡 for future developers:
 I, (Fatih Koc) initially coded this project from scratch. if you ever see yourself reading this file, pls send a message me on LinkedIn so I can remember the good old days...  also below down you'll find a small easter egg for you. 
 
-hours spent on debugginng: 46+  
+hours spent on debugginng: 48+  
 (make sure to increase the number as you go to keep the legacy alive)
 
 ## ✅ done: 

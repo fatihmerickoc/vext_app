@@ -45,8 +45,12 @@ class AuthService {
 
   //logout user
   Future<void> logOutUser() async {
-    if (supabase.auth.currentUser != null) {
-      await supabase.auth.signOut();
+    try {
+      if (supabase.auth.currentUser != null) {
+        await supabase.auth.signOut();
+      }
+    } catch (e) {
+      print(e.toString());
     }
   }
 }
