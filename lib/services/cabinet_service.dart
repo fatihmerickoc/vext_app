@@ -14,8 +14,9 @@ class CabinetService {
   static const thingsBoardApiEndpoint = 'https://thingsboard.vinicentus.net';
   static const username = 'fatih+tenant.admin@vext.fi';
   static const password = '782246Vext.';
-  static const deviceId = '9cc4a980-0317-11ef-a0ef-7f542c4ca39c';
-  static const cabinetId = 'T00P00TEST0'; //FIXME: get this later from supabase
+  static const cabinetIdTB = '7ffc0a50-0317-11ef-a0ef-7f542c4ca39c';
+  static const cabinetName = 'PRE05B00S0001';
+  static const cabinetIdSB = 'T00P00TEST0';
 
   final _tbClient = ThingsboardClient(thingsBoardApiEndpoint);
 
@@ -58,7 +59,7 @@ class CabinetService {
       //filter tasks whose cabinet equals to user's cabinet
       final taskData = await supabase.from('tasks').select().eq(
             'cabinet',
-            cabinetId,
+            cabinetIdSB,
           );
 
       for (var task in taskData) {
@@ -99,10 +100,8 @@ class CabinetService {
     try {
       await _tbClient.login(LoginRequest(username, password));
 
-      var deviceName = 'Black Vext';
-
       var entityFilter = EntityNameFilter(
-          entityType: EntityType.DEVICE, entityNameFilter: deviceName);
+          entityType: EntityType.DEVICE, entityNameFilter: cabinetName);
 
       var deviceFields = <EntityKey>[
         EntityKey(type: EntityKeyType.ENTITY_FIELD, key: 'name'),
@@ -149,7 +148,7 @@ class CabinetService {
       Map<String, dynamic> telemetryData = {};
 
       var foundDevice =
-          await _tbClient.getDeviceService().getDeviceInfo(deviceId);
+          await _tbClient.getDeviceService().getDeviceInfo(cabinetIdTB);
 
       //getting the attributes
       var attributes = await _tbClient
@@ -201,7 +200,7 @@ class CabinetService {
       //  await tbClient.login(LoginRequest(username, password));
 
       var foundDevice =
-          await _tbClient.getDeviceService().getDeviceInfo(deviceId);
+          await _tbClient.getDeviceService().getDeviceInfo(cabinetIdTB);
 
       // Save device shared attributes
       await _tbClient.getAttributeService().saveEntityAttributesV2(
@@ -229,7 +228,7 @@ class CabinetService {
   Future<void> setTimeFromTimePicker(int turnOn, turnOFF) async {
     try {
       var foundDevice =
-          await _tbClient.getDeviceService().getDeviceInfo(deviceId);
+          await _tbClient.getDeviceService().getDeviceInfo(cabinetIdTB);
 
       // Save device shared attributes
       await _tbClient.getAttributeService().saveEntityAttributesV2(
@@ -257,7 +256,7 @@ class CabinetService {
   Future<void> setPlantStage(String plantStage) async {
     try {
       var foundDevice =
-          await _tbClient.getDeviceService().getDeviceInfo(deviceId);
+          await _tbClient.getDeviceService().getDeviceInfo(cabinetIdTB);
 
       // Save device shared attributes
       await _tbClient.getAttributeService().saveEntityAttributesV2(
