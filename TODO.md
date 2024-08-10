@@ -4,12 +4,12 @@ Welcome to the TODO list for vext_app! This document serves as a roadmap for the
 
 ## 🚨 urgent:
 - **code the logic for getting the assigned cabinet for authenticated user**
+- **code the logic behind the setting nutrients**
 - **push notifications** 
 
 ## 🔜 later:
 - **pairing the app with the Vext cabinet(co-op with Vincent)**
 - **simplify backend while writing a proper documentation for the app**
-- **code the logic behind the setting nutrients**
 
 ## 🙃 if i have nothing to do:
 - **come up with text for plant guides** 

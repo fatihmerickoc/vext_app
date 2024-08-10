@@ -15,7 +15,6 @@ class CabinetProvider extends ChangeNotifier {
       'nutrientBVolume'
     ],
     attributeKeys: [
-      'serialNumber',
       'middleRightLedBrightness',
       'turnOnTime',
       'turnOffTime',
@@ -26,18 +25,17 @@ class CabinetProvider extends ChangeNotifier {
 
   Future<CabinetModel?> fetchCabinet() async {
     try {
-      final jsonData = await _cabinetService.fetchDataForVextModel();
-      if (jsonData.isNotEmpty) {
-        final CabinetModel fetchedCabinet = CabinetModel.fromJson(jsonData);
-        _cabinet = fetchedCabinet;
+      final fetchedCabinetData =
+          await _cabinetService.fetchDataForCabinetModel();
+      if (fetchedCabinetData != null) {
+        _cabinet = fetchedCabinetData;
         notifyListeners();
-        return fetchedCabinet;
+        return _cabinet;
       } else {
         print("JSON value is empty");
       }
     } catch (e) {
       print('Catched an error fetching cabinet: $e');
-      return null;
     }
     return null;
   }

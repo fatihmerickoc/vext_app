@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:vext_app/main.dart';
-import 'package:vext_app/providers/user_provider.dart';
+import 'package:vext_app/services/auth_service.dart';
 import 'package:vext_app/styles/styles.dart';
 
 class LoginAuth extends StatefulWidget {
@@ -84,12 +83,10 @@ class _LoginAuthState extends State<LoginAuth> {
   }
 
   Widget _loginButton() {
-    final userProvider = Provider.of<UserProvider>(context, listen: true);
-
+    final AuthService authService = AuthService();
     return GestureDetector(
       onTap: () async {
-        if (userProvider.isLoading) return;
-        final isLoginSuccessful = await userProvider.logIn(
+        final isLoginSuccessful = await authService.logInUser(
           _emailController.text.trim(),
           _passwordController.text.trim(),
         );
@@ -111,17 +108,13 @@ class _LoginAuthState extends State<LoginAuth> {
           borderRadius: BorderRadius.circular(12.0),
         ),
         child: Center(
-          child: userProvider.isLoading
-              ? const CircularProgressIndicator(
-                  color: Styles.white,
-                )
-              : Text(
-                  'Sign In',
-                  style: Styles.title_text.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+          child: Text(
+            'Sign In',
+            style: Styles.title_text.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ),
       ),
     );

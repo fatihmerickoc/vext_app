@@ -61,7 +61,7 @@ class _SettingsState extends State<Settings> {
             _settingsText('Device Information'),
             ListTile(
               title: Text(
-                'Serial Number: ${cabinetProvider.cabinet.cabinet_id}',
+                'Serial Number: ${cabinetProvider.cabinet.cabinet_idTB}',
                 style: Styles.body_text.copyWith(fontWeight: FontWeight.w500),
               ),
               subtitle: const Text(

@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:vext_app/main.dart';
-import 'package:vext_app/providers/user_provider.dart';
 import 'package:vext_app/screens/home.dart';
+import 'package:vext_app/services/auth_service.dart';
 import 'package:vext_app/styles/styles.dart';
 
 class RegisterAuth extends StatefulWidget {
@@ -118,12 +117,9 @@ class _RegisterAuthState extends State<RegisterAuth> {
   }
 
   Widget _registerButton() {
-    final userProvider = Provider.of<UserProvider>(context);
-
+    final AuthService authService = AuthService();
     return GestureDetector(
       onTap: () async {
-        if (userProvider.isLoading) return;
-
         final email = _emailController.text.trim();
         final password = _passwordController.text.trim();
 
@@ -134,7 +130,7 @@ class _RegisterAuthState extends State<RegisterAuth> {
         }
 
         final isRegisterSuccessful =
-            await userProvider.register(email, password);
+            await authService.registerUser(email, password);
         _emailController.clear();
         _passwordController.clear();
 
@@ -156,17 +152,13 @@ class _RegisterAuthState extends State<RegisterAuth> {
           borderRadius: BorderRadius.circular(12.0),
         ),
         child: Center(
-          child: userProvider.isLoading
-              ? const CircularProgressIndicator(
-                  color: Styles.white,
-                )
-              : Text(
-                  'Sign Up',
-                  style: Styles.title_text.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+          child: Text(
+            'Sign Up',
+            style: Styles.title_text.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ),
       ),
     );

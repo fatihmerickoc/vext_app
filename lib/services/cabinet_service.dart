@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:thingsboard_client/thingsboard_client.dart';
 import 'package:vext_app/main.dart';
+import 'package:vext_app/models/cabinet_model.dart';
+import 'package:vext_app/models/owner_model.dart';
 import 'package:vext_app/models/taskInfo_model.dart';
 import 'package:vext_app/models/task_model.dart';
 
@@ -11,14 +13,9 @@ class CabinetService {
   final List<String> attributeKeys;
   final Duration durationOfFetching;
 
-  static const thingsBoardApiEndpoint = 'https://thingsboard.vinicentus.net';
-  static const username = 'fatih+tenant.admin@vext.fi';
-  static const password = '782246Vext.';
-  static const cabinetIdTB = '7ffc0a50-0317-11ef-a0ef-7f542c4ca39c';
-  static const cabinetName = 'PRE05B00S0001';
-  static const cabinetIdSB = 'T00P00TEST0';
+  CabinetModel _cabinetModel = CabinetModel();
 
-  final _tbClient = ThingsboardClient(thingsBoardApiEndpoint);
+  final _tbClient = ThingsboardClient('https://thingsboard.vinicentus.net');
 
   List<TaskModel> taskList = [];
   List<TaskModel> taskFutureList = [];
@@ -33,14 +30,32 @@ class CabinetService {
   });
 
   //method to construct the vext model by fething/subscribing data from Thingsboard & Supabase
-  Future<Map<String, dynamic>> fetchDataForVextModel() async {
+  Future<CabinetModel?> fetchDataForCabinetModel() async {
     try {
-      final value = await _fetchDataFromThingsboard();
+      _cabinetModel.cabinet_owner = await _fetchOwnerInfo();
+
+      if (_cabinetModel.cabinet_owner?.owner_email == null) {
+        throw Exception('User has no cabinets that are assigned to him');
+      }
+
+      Map<String, dynamic> value = {};
+
+      value = await _fetchCabinetInfoFromTB();
+      if (value == {}) return null;
+
+      _cabinetModel.cabinet_idTB = value['cabinetIdTB'];
+      _cabinetModel.cabinet_name = value['cabinetName'];
+
+      value.addAll(await _fetchDataFromThingsboard());
       value['tasks'] = await _fetchTasksFromSupabase();
       value['tasks_future'] = taskFutureList;
       value['tasks_completed'] = taskCompletedList;
 
-      return value;
+      _cabinetModel = CabinetModel.fromJson(value);
+
+      print(value);
+
+      return _cabinetModel;
     } catch (e) {
       debugPrint('Error: $e');
 
@@ -48,60 +63,70 @@ class CabinetService {
     }
   }
 
-  Future<List<TaskModel>> _fetchTasksFromSupabase() async {
+  Future<OwnerModel?> _fetchOwnerInfo() async {
     try {
-      final task_infoData = await supabase.from('task_info').select();
-
-      for (var task_info in task_infoData) {
-        taskInfoList.add(TaskInfoModel.fromJson(task_info));
-      }
-
-      //filter tasks whose cabinet equals to user's cabinet
-      final taskData = await supabase.from('tasks').select().eq(
-            'cabinet',
-            cabinetIdSB,
+      final profilesData = await supabase.from('profiles').select().eq(
+            'id',
+            supabase.auth.currentUser!.id,
           );
 
-      for (var task in taskData) {
-        TaskInfoModel taskInfoModel =
-            taskInfoList.firstWhere((map) => map.id == task['info']);
+      if (profilesData.first.isEmpty) return null;
 
-        task['name'] = taskInfoModel.name;
-        task['category'] = taskInfoModel.type;
-        task['description'] = taskInfoModel.description;
-        task['category_color'] = taskInfoModel.color;
+      String tbID = profilesData.first['thingsboard_user_id'];
 
-        TaskModel uploadTask = TaskModel.fromJson(task);
+      final thingsboard_usersData =
+          await supabase.from('thingsboard_users').select().eq('id', tbID);
 
-        if (uploadTask.task_completedDate !=
-            DateTime.fromMillisecondsSinceEpoch(0)) {
-          taskCompletedList.add(uploadTask);
-        } else if (uploadTask.task_dueDate.difference(DateTime.now()).inDays >
-            7) {
-          taskFutureList.add(uploadTask);
-        } else {
-          taskList.add(uploadTask);
-        }
-      }
+      return OwnerModel(
+        owner_id: tbID,
+        owner_email: thingsboard_usersData.first['email'],
+        owner_password: thingsboard_usersData.first['password'],
+      );
+    } catch (e) {
+      debugPrint('Error: $e');
 
-      //
-      taskList.sort((a, b) => a.task_dueDate.compareTo(b.task_dueDate));
-      taskCompletedList.sort(
-          (a, b) => a.task_completedDate!.compareTo(b.task_completedDate!));
-
-      return taskList;
-    } catch (e, s) {
-      print("ERROR: $e and STACK $s");
-      return [];
+      throw Exception('Failed to fetch owner info');
     }
+  }
+
+  Future<Map<String, dynamic>> _fetchCabinetInfoFromTB() async {
+    try {
+      await _tbClient.login(LoginRequest(
+          _cabinetModel.cabinet_owner!.owner_email!,
+          _cabinetModel.cabinet_owner!.owner_password!));
+      var pageLink = PageLink(1);
+      PageData<DeviceInfo> device;
+
+      device = await _tbClient.getDeviceService().getCustomerDeviceInfos(
+            _tbClient.getAuthUser()!.customerId!,
+            pageLink,
+          );
+
+      await _tbClient.logout();
+      return {
+        "cabinetName": device.data.first.name,
+        'cabinetIdTB': device.data.first.id!.id,
+        'isActive': device.data.first.active!,
+      };
+    } catch (e, s) {
+      print('Error: $e');
+      print('Stack: $s');
+    }
+    return {};
   }
 
   Future<Map<String, dynamic>> _fetchDataFromThingsboard() async {
     try {
-      await _tbClient.login(LoginRequest(username, password));
+      await _tbClient.login(
+        LoginRequest(
+          _cabinetModel.cabinet_owner!.owner_email!,
+          _cabinetModel.cabinet_owner!.owner_password!,
+        ),
+      );
 
       var entityFilter = EntityNameFilter(
-          entityType: EntityType.DEVICE, entityNameFilter: cabinetName);
+          entityType: EntityType.DEVICE,
+          entityNameFilter: _cabinetModel.cabinet_name!);
 
       var deviceFields = <EntityKey>[
         EntityKey(type: EntityKeyType.ENTITY_FIELD, key: 'name'),
@@ -147,8 +172,9 @@ class CabinetService {
 
       Map<String, dynamic> telemetryData = {};
 
-      var foundDevice =
-          await _tbClient.getDeviceService().getDeviceInfo(cabinetIdTB);
+      var foundDevice = await _tbClient
+          .getDeviceService()
+          .getDeviceInfo(_cabinetModel.cabinet_idTB!);
 
       //getting the attributes
       var attributes = await _tbClient
@@ -194,13 +220,62 @@ class CabinetService {
     }
   }
 
+  Future<List<TaskModel>> _fetchTasksFromSupabase() async {
+    try {
+      final task_infoData = await supabase.from('task_info').select();
+
+      for (var task_info in task_infoData) {
+        taskInfoList.add(TaskInfoModel.fromJson(task_info));
+      }
+
+      //filter tasks whose cabinet equals to user's cabinet
+      final taskData = await supabase.from('tasks').select().eq(
+            'cabinet',
+            _cabinetModel.cabinet_name!,
+          );
+
+      for (var task in taskData) {
+        TaskInfoModel taskInfoModel =
+            taskInfoList.firstWhere((map) => map.id == task['info']);
+
+        task['name'] = taskInfoModel.name;
+        task['category'] = taskInfoModel.type;
+        task['description'] = taskInfoModel.description;
+        task['category_color'] = taskInfoModel.color;
+
+        TaskModel uploadTask = TaskModel.fromJson(task);
+
+        if (uploadTask.task_completedDate !=
+            DateTime.fromMillisecondsSinceEpoch(0)) {
+          taskCompletedList.add(uploadTask);
+        } else if (uploadTask.task_dueDate.difference(DateTime.now()).inDays >
+            7) {
+          taskFutureList.add(uploadTask);
+        } else {
+          taskList.add(uploadTask);
+        }
+      }
+
+      //
+      taskList.sort((a, b) => a.task_dueDate.compareTo(b.task_dueDate));
+      taskCompletedList.sort(
+          (a, b) => a.task_completedDate!.compareTo(b.task_completedDate!));
+
+      return taskList;
+    } catch (e, s) {
+      print("ERROR: $e and STACK $s");
+      return [];
+    }
+  }
+
   //method that updates lights values from Thingsboard
   Future<void> setLightsFromSlider(int sliderValue) async {
     try {
-      //  await tbClient.login(LoginRequest(username, password));
+      //  await tbClient.login(LoginRequest(email, password));
 
-      var foundDevice =
-          await _tbClient.getDeviceService().getDeviceInfo(cabinetIdTB);
+      var foundDevice = await _tbClient
+          .getDeviceService()
+          .getDeviceInfo(_cabinetModel.cabinet_idTB!);
 
       // Save device shared attributes
       await _tbClient.getAttributeService().saveEntityAttributesV2(
@@ -227,8 +302,9 @@ class CabinetService {
   //method that updates turnOn and turnOFF values from Thingsboard
   Future<void> setTimeFromTimePicker(int turnOn, turnOFF) async {
     try {
-      var foundDevice =
-          await _tbClient.getDeviceService().getDeviceInfo(cabinetIdTB);
+      var foundDevice = await _tbClient
+          .getDeviceService()
+          .getDeviceInfo(_cabinetModel.cabinet_idTB!);
 
       // Save device shared attributes
       await _tbClient.getAttributeService().saveEntityAttributesV2(
@@ -248,15 +324,18 @@ class CabinetService {
     }
   }
 
+  //method that updates the task values from Supabase
   Future<void> setCompleteTasks(TaskModel task) async {
     await supabase.from('tasks').update(
         {'completed_date': DateTime.now().toString()}).eq('id', task.task_id);
   }
 
+  //method that updates the plant stage values from Thingsboard
   Future<void> setPlantStage(String plantStage) async {
     try {
-      var foundDevice =
-          await _tbClient.getDeviceService().getDeviceInfo(cabinetIdTB);
+      var foundDevice = await _tbClient
+          .getDeviceService()
+          .getDeviceInfo(_cabinetModel.cabinet_idTB!);
 
       // Save device shared attributes
       await _tbClient.getAttributeService().saveEntityAttributesV2(
@@ -272,14 +351,3 @@ class CabinetService {
     }
   }
 }
-
-//to save updates
-/*  var telemetryRequest = {
-         'temperature': temperature,
-         'humidity': humidity
-    };
-    print('Save telemetry request: $telemetryRequest');
-    var res = await tbClient.getAttributeService().saveEntityTelemetry(
-    savedDevice.id!, 'TELEMETRY', telemetryRequest);
-    print('Save telemetry result: $res');
-*/

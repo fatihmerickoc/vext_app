@@ -1,10 +1,9 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:vext_app/main.dart';
-import 'package:vext_app/models/user_model.dart';
 
 class AuthService {
   //create user
-  Future<UserModel?> registerUser(String email, password) async {
+  Future<bool> registerUser(String email, password) async {
     try {
       final AuthResponse response = await supabase.auth.signUp(
           email: email,
@@ -12,19 +11,16 @@ class AuthService {
           emailRedirectTo: 'fi.vext.vextapp://register-callback/');
 
       if (response.user != null) {
-        return UserModel(
-          user_id: response.user!.id,
-          user_email: response.user!.email ?? '',
-        );
+        return true;
       }
     } catch (e) {
       print(e.toString());
     }
-    return null;
+    return false;
   }
 
   //login user
-  Future<UserModel?> logInUser(String email, password) async {
+  Future<bool> logInUser(String email, password) async {
     try {
       final AuthResponse response = await supabase.auth.signInWithPassword(
         email: email,
@@ -32,15 +28,12 @@ class AuthService {
       );
 
       if (response.user != null) {
-        return UserModel(
-          user_id: response.user!.id,
-          user_email: response.user!.email ?? '',
-        );
+        return true;
       }
     } catch (e) {
       print(e.toString());
     }
-    return null;
+    return false;
   }
 
   //logout user
