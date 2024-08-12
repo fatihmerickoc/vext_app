@@ -135,51 +135,76 @@ class _WaterState extends State<Water> {
     required String title,
     required String body,
   }) {
-    if (Platform.isIOS) {
-      return CupertinoAlertDialog(
-        title: Text(
-          title,
-          textAlign: TextAlign.start,
-          style: Styles.title_text,
+    return AlertDialog(
+      title: Text(
+        title,
+        textAlign: TextAlign.start,
+        style: Styles.title_text,
+      ),
+      content: Text(
+        body,
+        textAlign: TextAlign.start,
+        style: Styles.body_text,
+      ),
+      actions: [
+        TextButton(
+          child: const Text(
+            'OK',
+            style: TextStyle(color: Styles.darkGreen),
+          ),
+          onPressed: () => Navigator.of(context).pop(),
         ),
-        content: Text(
-          body,
-          textAlign: TextAlign.start,
-          style: Styles.body_text,
-        ),
-        actions: [
-          CupertinoDialogAction(
-            child: const Text(
-              'OK',
-              style: TextStyle(color: Styles.darkGreen),
-            ),
-            onPressed: () => Navigator.of(context).pop(),
+      ],
+    );
+  }
+
+  Widget _refillNutrientsDialog(double nutrientA, nutrientB) {
+    return AlertDialog(
+      title: const Text(
+        'Refill Nutrients',
+        style: Styles.title_text,
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Nutrient A: ${nutrientA.round()}'),
+          Slider(
+            value: nutrientA,
+            min: 0,
+            max: 300,
+            divisions: 300,
+            onChanged: (value) {
+              setState(() {
+                nutrientA = value;
+              });
+            },
+          ),
+          const SizedBox(height: 20),
+          Text('Nutrient 2: ${nutrientB.round()}'),
+          Slider(
+            value: nutrientB,
+            min: 0,
+            max: 300,
+            divisions: 300,
+            onChanged: (value) {
+              setState(() {
+                nutrientB = value;
+              });
+            },
           ),
         ],
-      );
-    } else {
-      return AlertDialog(
-        title: Text(
-          title,
-          textAlign: TextAlign.start,
-          style: Styles.title_text,
+      ),
+      actions: [
+        TextButton(
+          child: const Text('Update'),
+          onPressed: () {
+            // You can use slider1Value and slider2Value here
+            // or pass them back to the parent widget
+            Navigator.of(context).pop();
+          },
         ),
-        content: Text(
-          body,
-          textAlign: TextAlign.start,
-          style: Styles.body_text,
-        ),
-        actions: [
-          TextButton(
-            child: const Text(
-              'OK',
-              style: TextStyle(color: Styles.darkGreen),
-            ),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-      );
-    }
+      ],
+    );
   }
 
   @override
@@ -202,7 +227,7 @@ class _WaterState extends State<Water> {
               Styles.height_15,
               _buildIngredientBoxRow(cabinetProvider.cabinet),
               const Spacer(),
-              _buildRefillNutrientsContainer(),
+              _buildRefillNutrientsContainer(cabinetProvider),
             ],
           ),
         ),
@@ -292,18 +317,29 @@ class _WaterState extends State<Water> {
     );
   }
 
-  Widget _buildRefillNutrientsContainer() {
-    return Container(
-      width: 200,
-      padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: const Text(
-        'Refill nutrients',
-        textAlign: TextAlign.center,
-        style: Styles.body_text,
+  Widget _buildRefillNutrientsContainer(CabinetProvider cabinetProvider) {
+    return InkWell(
+      onTap: () async {
+        showDialog<String>(
+          context: context,
+          builder: (context) => _refillNutrientsDialog(
+            cabinetProvider.cabinet.cabinet_nutrientAVolume!,
+            cabinetProvider.cabinet.cabinet_nutrientBVolume!,
+          ),
+        );
+      },
+      child: Container(
+        width: 200,
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: const Text(
+          'Refill nutrients',
+          textAlign: TextAlign.center,
+          style: Styles.body_text,
+        ),
       ),
     );
   }

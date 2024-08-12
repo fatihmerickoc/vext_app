@@ -117,6 +117,7 @@ class CabinetService {
 
   Future<Map<String, dynamic>> _fetchDataFromThingsboard() async {
     try {
+      Map<String, dynamic> telemetryData = {};
       await _tbClient.login(
         LoginRequest(
           _cabinetModel.cabinet_owner!.owner_email!,
@@ -124,6 +125,23 @@ class CabinetService {
         ),
       );
 
+      //ATTRIBUTE KEYS
+      var foundDevice = await _tbClient
+          .getDeviceService()
+          .getDeviceInfo(_cabinetModel.cabinet_idTB!);
+
+      var attributes = await _tbClient
+          .getAttributeService()
+          .getAttributeKvEntries(foundDevice!.id!, attributeKeys);
+
+      for (int i = 0; i < attributes.length; i++) {
+        String key = attributes[i].getKey();
+        var value = attributes[i].getValue();
+
+        telemetryData[key] = value;
+      }
+
+      //TELEMETRY KEYS
       var entityFilter = EntityNameFilter(
           entityType: EntityType.DEVICE,
           entityNameFilter: _cabinetModel.cabinet_name!);
@@ -141,7 +159,6 @@ class CabinetService {
 
       var devicesQuery = EntityDataQuery(
         entityFilter: entityFilter,
-        entityFields: deviceFields,
         latestValues: deviceTelemetry,
         pageLink: EntityDataPageLink(
           pageSize: telemetryKeys.length,
@@ -168,26 +185,6 @@ class CabinetService {
 
       var subscription = TelemetrySubscriber(telemetryService, [cmd]);
 
-      debugPrint("Started");
-
-      Map<String, dynamic> telemetryData = {};
-
-      var foundDevice = await _tbClient
-          .getDeviceService()
-          .getDeviceInfo(_cabinetModel.cabinet_idTB!);
-
-      //getting the attributes
-      var attributes = await _tbClient
-          .getAttributeService()
-          .getAttributeKvEntries(foundDevice!.id!, attributeKeys);
-
-      for (int i = 0; i < attributes.length; i++) {
-        String key = attributes[i].getKey();
-        var value = attributes[i].getValue();
-
-        telemetryData[key] = value;
-      }
-
       // getting the telemtry values
       subscription.entityDataStream.listen(
         (dataUpdate) {
@@ -205,11 +202,10 @@ class CabinetService {
 
       subscription.subscribe();
 
-      await Future.delayed(const Duration(milliseconds: 200));
+      await Future.delayed(const Duration(seconds: 1));
 
       subscription.unsubscribe();
       //await tbClient.logout();
-      debugPrint("Ended");
 
       return telemetryData;
     } catch (e, s) {
@@ -348,6 +344,19 @@ class CabinetService {
       debugPrint('Error: $e');
       debugPrint('Stack: $s');
       // await tbClient.logout();
+    }
+  }
+
+  //method that sends 2 way server-side-rpc using REST API which sets nutrients values
+  Future<void> setNutrients(double? nutrientA, nutrientB) async {
+    try {
+      if (nutrientA != null) {
+        //Send 2 way server-side-rpc using REST API for nutrient A
+      } else {
+        //Send 2 way server-side-rpc using REST API for nutrient B
+      }
+    } catch (e) {
+      debugPrint('Error refilling nutrients: $e');
     }
   }
 }

@@ -158,51 +158,27 @@ class LightsState extends State<Lights> {
     required String title,
     required String body,
   }) {
-    if (Platform.isIOS) {
-      return CupertinoAlertDialog(
-        title: Text(
-          title,
-          textAlign: TextAlign.start,
-          style: Styles.title_text,
-        ),
-        content: Text(
-          body,
-          textAlign: TextAlign.start,
-          style: Styles.body_text,
-        ),
-        actions: [
-          CupertinoDialogAction(
-            child: const Text(
-              'OK',
-              style: TextStyle(color: Styles.darkGreen),
-            ),
-            onPressed: () => Navigator.of(context).pop(),
+    return AlertDialog(
+      title: Text(
+        title,
+        textAlign: TextAlign.start,
+        style: Styles.title_text,
+      ),
+      content: Text(
+        body,
+        textAlign: TextAlign.start,
+        style: Styles.body_text,
+      ),
+      actions: [
+        TextButton(
+          child: const Text(
+            'OK',
+            style: TextStyle(color: Styles.darkGreen),
           ),
-        ],
-      );
-    } else {
-      return AlertDialog(
-        title: Text(
-          title,
-          textAlign: TextAlign.start,
-          style: Styles.title_text,
+          onPressed: () => Navigator.of(context).pop(),
         ),
-        content: Text(
-          body,
-          textAlign: TextAlign.start,
-          style: Styles.body_text,
-        ),
-        actions: [
-          TextButton(
-            child: const Text(
-              'OK',
-              style: TextStyle(color: Styles.darkGreen),
-            ),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-      );
-    }
+      ],
+    );
   }
 
   @override

@@ -20,7 +20,7 @@ class CabinetProvider extends ChangeNotifier {
       'turnOffTime',
       'plantStage',
     ],
-    durationOfFetching: const Duration(hours: 4),
+    durationOfFetching: const Duration(hours: 2),
   );
 
   Future<CabinetModel?> fetchCabinet() async {
@@ -83,6 +83,17 @@ class CabinetProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       print('Catched an error updating cabinet plant stage: $e');
+    }
+  }
+
+  Future<void> updateNutrients({double? nutrientA, nutrientB}) async {
+    try {
+      await _cabinetService.setNutrients(nutrientA, nutrientB);
+      _cabinet.cabinet_nutrientAVolume = nutrientA;
+      _cabinet.cabinet_nutrientBVolume = nutrientB;
+      notifyListeners();
+    } catch (e) {
+      print('Catched an error updating cabinet nutrients: $e');
     }
   }
 }
