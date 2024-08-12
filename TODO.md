@@ -16,7 +16,7 @@ Welcome to the TODO list for vext_app! This document serves as a roadmap for the
 ## 💡 for future developers:
 I, (Fatih Koc) initially coded this project from scratch. if you ever see yourself reading this file, pls send a message me on LinkedIn so I can remember the good old days...  also below down you'll find a small easter egg for you. 
 
-hours spent on debugginng: 50+  
+hours spent on debugginng: 51+  
 (make sure to increase the number as you go to keep the legacy alive)
 
 ## ✅ done: 
