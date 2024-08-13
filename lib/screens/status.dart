@@ -159,51 +159,46 @@ class _WaterState extends State<Water> {
   }
 
   Widget _refillNutrientsDialog(double nutrientA, nutrientB) {
-    return AlertDialog(
-      title: const Text(
-        'Refill Nutrients',
-        style: Styles.title_text,
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text('Nutrient A: ${nutrientA.round()}'),
-          Slider(
-            value: nutrientA,
-            min: 0,
-            max: 300,
-            divisions: 300,
-            onChanged: (value) {
-              setState(() {
+    return StatefulBuilder(
+      builder: (context, state) => AlertDialog(
+        title: const Text(
+          'Refill Nutrients',
+          style: Styles.title_text,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Nutrient A: ${nutrientA.round()}'),
+            Slider(
+              value: nutrientA,
+              min: 0,
+              max: 300,
+              onChanged: (value) => state(() {
                 nutrientA = value;
-              });
-            },
-          ),
-          const SizedBox(height: 20),
-          Text('Nutrient 2: ${nutrientB.round()}'),
-          Slider(
-            value: nutrientB,
-            min: 0,
-            max: 300,
-            divisions: 300,
-            onChanged: (value) {
-              setState(() {
+              }),
+            ),
+            const SizedBox(height: 20),
+            Text('Nutrient 2: ${nutrientB.round()}'),
+            Slider(
+              value: nutrientB,
+              min: 0,
+              max: 300,
+              onChanged: (value) => state(() {
                 nutrientB = value;
-              });
+              }),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: const Text('Update'),
+            onPressed: () {
+              Navigator.of(context)
+                  .pop({"nutrientA": nutrientA, "nutrientB": nutrientB});
             },
           ),
         ],
       ),
-      actions: [
-        TextButton(
-          child: const Text('Update'),
-          onPressed: () {
-            // You can use slider1Value and slider2Value here
-            // or pass them back to the parent widget
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
     );
   }
 
@@ -235,7 +230,7 @@ class _WaterState extends State<Water> {
     );
   }
 
-  Widget _buildIngredientBoxRow(CabinetModel updatedCabinet) {
+  Widget _buildIngredientBoxRow(CabinetModel cabinet) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -246,23 +241,23 @@ class _WaterState extends State<Water> {
         children: [
           _box(
             title: 'Water',
-            height: updatedCabinet.cabinet_waterVolume! * 15,
-            value: updatedCabinet.cabinet_waterVolume!,
+            height: cabinet.cabinet_waterVolume! * 15,
+            value: cabinet.cabinet_waterVolume!,
             color: Styles.waterColour,
             flex: 2,
           ),
           Styles.width_5,
           _box(
             title: 'A',
-            height: updatedCabinet.cabinet_nutrientAVolume!,
-            value: updatedCabinet.cabinet_nutrientAVolume!,
+            height: cabinet.cabinet_nutrientAVolume!,
+            value: cabinet.cabinet_nutrientAVolume!,
             color: Styles.green,
           ),
           Styles.width_5,
           _box(
             title: 'B',
-            height: updatedCabinet.cabinet_nutrientBVolume!,
-            value: updatedCabinet.cabinet_nutrientBVolume!,
+            height: cabinet.cabinet_nutrientBVolume!,
+            value: cabinet.cabinet_nutrientBVolume!,
             color: Styles.orange,
           ),
         ],
@@ -320,13 +315,19 @@ class _WaterState extends State<Water> {
   Widget _buildRefillNutrientsContainer(CabinetProvider cabinetProvider) {
     return InkWell(
       onTap: () async {
-        showDialog<String>(
+        Map<String, dynamic>? nutrients =
+            await showDialog<Map<String, dynamic>?>(
           context: context,
           builder: (context) => _refillNutrientsDialog(
             cabinetProvider.cabinet.cabinet_nutrientAVolume!,
             cabinetProvider.cabinet.cabinet_nutrientBVolume!,
           ),
         );
+        if (nutrients != null) {
+          await cabinetProvider.updateNutrients(
+              nutrients['nutrientA'], nutrients['nutrientB']);
+          print("UPDATED NUTRIENTS");
+        }
       },
       child: Container(
         width: 200,

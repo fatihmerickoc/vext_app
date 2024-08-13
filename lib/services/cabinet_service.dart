@@ -53,8 +53,6 @@ class CabinetService {
 
       _cabinetModel = CabinetModel.fromJson(value);
 
-      print(value);
-
       return _cabinetModel;
     } catch (e) {
       debugPrint('Error: $e');
@@ -117,7 +115,8 @@ class CabinetService {
 
   Future<Map<String, dynamic>> _fetchDataFromThingsboard() async {
     try {
-      Map<String, dynamic> telemetryData = {};
+      Map<String, dynamic> tbData = {};
+
       await _tbClient.login(
         LoginRequest(
           _cabinetModel.cabinet_owner!.owner_email!,
@@ -138,30 +137,19 @@ class CabinetService {
         String key = attributes[i].getKey();
         var value = attributes[i].getValue();
 
-        telemetryData[key] = value;
+        tbData[key] = value;
       }
 
       //TELEMETRY KEYS
       var entityFilter = EntityNameFilter(
-          entityType: EntityType.DEVICE,
-          entityNameFilter: _cabinetModel.cabinet_name!);
-
-      var deviceFields = <EntityKey>[
-        EntityKey(type: EntityKeyType.ENTITY_FIELD, key: 'name'),
-        EntityKey(type: EntityKeyType.ENTITY_FIELD, key: 'type'),
-        EntityKey(type: EntityKeyType.ENTITY_FIELD, key: 'createdTime')
-      ];
-
-      var deviceTelemetry = <EntityKey>[
-        for (String key in telemetryKeys)
-          EntityKey(type: EntityKeyType.TIME_SERIES, key: key),
-      ];
+        entityType: EntityType.DEVICE,
+        entityNameFilter: _cabinetModel.cabinet_name!,
+      );
 
       var devicesQuery = EntityDataQuery(
         entityFilter: entityFilter,
-        latestValues: deviceTelemetry,
         pageLink: EntityDataPageLink(
-          pageSize: telemetryKeys.length,
+          pageSize: 1,
         ),
       );
 
@@ -174,12 +162,7 @@ class CabinetService {
         limit: 1,
       );
 
-      var latesCmd = LatestValueCmd(
-        keys: deviceTelemetry,
-      );
-
-      var cmd =
-          EntityDataCmd(query: devicesQuery, tsCmd: tsCmd, latestCmd: latesCmd);
+      var cmd = EntityDataCmd(query: devicesQuery, tsCmd: tsCmd);
 
       var telemetryService = _tbClient.getTelemetryService();
 
@@ -188,14 +171,10 @@ class CabinetService {
       // getting the telemtry values
       subscription.entityDataStream.listen(
         (dataUpdate) {
-          if (dataUpdate.update != null) {
-            for (var data in dataUpdate.update!) {
-              data.timeseries.forEach((key, value) {
-                if (value.isNotEmpty) {
-                  telemetryData[key] = value.last.value;
-                }
-              });
-            }
+          for (var entry in dataUpdate.data!.data.first.timeseries.entries) {
+            var key = entry.key;
+            var value = entry.value.first.value;
+            tbData[key] = value;
           }
         },
       );
@@ -205,9 +184,8 @@ class CabinetService {
       await Future.delayed(const Duration(seconds: 1));
 
       subscription.unsubscribe();
-      //await tbClient.logout();
 
-      return telemetryData;
+      return tbData;
     } catch (e, s) {
       debugPrint('Error: $e');
       debugPrint('Stack: $s');
@@ -348,13 +326,20 @@ class CabinetService {
   }
 
   //method that sends 2 way server-side-rpc using REST API which sets nutrients values
-  Future<void> setNutrients(double? nutrientA, nutrientB) async {
+  Future<void> setNutrients(double nutrientA, nutrientB) async {
     try {
-      if (nutrientA != null) {
-        //Send 2 way server-side-rpc using REST API for nutrient A
-      } else {
-        //Send 2 way server-side-rpc using REST API for nutrient B
-      }
+      print("URL:   '/api/plugins/rpc/twoway/${_cabinetModel.cabinet_idTB}'");
+      var rpc = await _tbClient.post<Map<String, dynamic>>(
+        '/api/plugins/rpc/twoway/${_cabinetModel.cabinet_idTB}',
+        queryParameters: {
+          'method': 'refillNutrients',
+          'params': {
+            'nutrientA': nutrientA,
+            'nutrientB': nutrientB,
+          }
+        },
+      );
+      print("RPC DATA: ${rpc.data}");
     } catch (e) {
       debugPrint('Error refilling nutrients: $e');
     }
