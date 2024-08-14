@@ -328,7 +328,6 @@ class CabinetService {
   //method that sends 2 way server-side-rpc using REST API which sets nutrients values
   Future<void> setNutrients(double nutrientA, nutrientB) async {
     try {
-      print("URL:   '/api/plugins/rpc/twoway/${_cabinetModel.cabinet_idTB}'");
       var rpc = await _tbClient.post<Map<String, dynamic>>(
         '/api/plugins/rpc/twoway/${_cabinetModel.cabinet_idTB}',
         queryParameters: {
@@ -339,7 +338,6 @@ class CabinetService {
           }
         },
       );
-      print("RPC DATA: ${rpc.data}");
     } catch (e) {
       debugPrint('Error refilling nutrients: $e');
     }
