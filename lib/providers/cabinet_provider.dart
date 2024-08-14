@@ -86,7 +86,7 @@ class CabinetProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateNutrients(nutrientA, nutrientB) async {
+  Future<void> updateNutrients(double nutrientA, nutrientB) async {
     try {
       await _cabinetService.setNutrients(nutrientA, nutrientB);
       _cabinet.cabinet_nutrientAVolume = nutrientA;

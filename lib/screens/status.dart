@@ -173,8 +173,9 @@ class _WaterState extends State<Water> {
               value: nutrientA,
               min: 0,
               max: 300,
+              divisions: 30,
               onChanged: (value) => state(() {
-                nutrientA = value;
+                nutrientA = value.roundToDouble();
               }),
             ),
             const SizedBox(height: 20),
@@ -183,8 +184,9 @@ class _WaterState extends State<Water> {
               value: nutrientB,
               min: 0,
               max: 300,
+              divisions: 30,
               onChanged: (value) => state(() {
-                nutrientB = value;
+                nutrientB = value.roundToDouble();
               }),
             ),
           ],

@@ -172,6 +172,8 @@ class CabinetService {
       subscription.entityDataStream.listen(
         (dataUpdate) {
           for (var entry in dataUpdate.data!.data.first.timeseries.entries) {
+            if (entry.value.isEmpty) continue;
+            print("KEY: ${entry.key} VALUE: ${entry.value.first.value}");
             var key = entry.key;
             var value = entry.value.first.value;
             tbData[key] = value;
@@ -330,7 +332,7 @@ class CabinetService {
     try {
       var rpc = await _tbClient.post<Map<String, dynamic>>(
         '/api/plugins/rpc/twoway/${_cabinetModel.cabinet_idTB}',
-        queryParameters: {
+        data: {
           'method': 'refillNutrients',
           'params': {
             'nutrientA': nutrientA,
