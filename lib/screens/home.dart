@@ -62,6 +62,14 @@ class _HomeState extends State<Home> {
       },
       child: Container(
         decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(0, 5),
+            ),
+          ],
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
         ),
