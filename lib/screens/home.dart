@@ -66,8 +66,8 @@ class _HomeState extends State<Home> {
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 1,
-              blurRadius: 5,
-              offset: const Offset(0, 5),
+              blurRadius: 7,
+              offset: const Offset(0, 2),
             ),
           ],
           color: Colors.white,
@@ -90,30 +90,22 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final cabinetProvider =
+        Provider.of<CabinetProvider>(context, listen: false);
     return Scaffold(
       drawer: Drawer(
         child: ListView(
+          padding: EdgeInsets.zero,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Text(
-                  'Hi, Christian!',
-                  style:
-                      Styles.appBar_text.copyWith(fontWeight: FontWeight.w600),
-                ),
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: const Icon(
-                    Icons.close,
-                    size: 30,
-                  ),
-                )
-              ],
+            DrawerHeader(
+              child: Text(
+                cabinetProvider.cabinet.cabinet_owner?.owner_displayName == null
+                    ? 'Welcome'
+                    : "Hi, ${cabinetProvider.cabinet.cabinet_owner?.owner_displayName}",
+                style: Styles.appBar_text.copyWith(fontWeight: FontWeight.w600),
+              ),
             ),
-            Styles.height_10,
-            const Divider(),
             _drawerTile(
               title: 'My profile',
               pushedTo: (context) => const Profile(),

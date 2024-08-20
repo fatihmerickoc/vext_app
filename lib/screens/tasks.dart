@@ -55,7 +55,9 @@ class _TasksState extends State<Tasks> {
               ),
               InkWell(
                   onTap: () => _completeTask(task, isFutureTask),
-                  child: const Icon(Icons.check_box_outline_blank)),
+                  child: const Icon(
+                    Icons.check_box_outline_blank_rounded,
+                  )),
             ],
           ),
           InkWell(
