@@ -6,6 +6,7 @@ Welcome to the TODO list for vext_app! This document serves as a roadmap for the
 - **adding forgot password button to login page**
 - **push notifications** 
 
+
 ## 🔜 later:
 - **pairing the app with the Vext cabinet(co-op with Vincent)**
 - **simplify backend while writing a proper documentation for the app**

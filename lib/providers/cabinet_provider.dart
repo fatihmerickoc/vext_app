@@ -65,11 +65,14 @@ class CabinetProvider extends ChangeNotifier {
       {bool isFutureTask = false}) async {
     try {
       await _cabinetService.setCompleteTasks(task);
+
       if (isFutureTask) {
         _cabinet.cabinet_futureTasks!.remove(task);
       } else {
         _cabinet.cabinet_tasks!.remove(task);
       }
+
+      _cabinet.cabinet_completedTasks!.add(task);
       notifyListeners();
     } catch (e) {
       print('Catched an error updating cabinet task: $e');

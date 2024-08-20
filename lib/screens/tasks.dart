@@ -179,8 +179,8 @@ class _TasksState extends State<Tasks> {
   Future<void> _completeTask(TaskModel task, bool isFutureTask) async {
     final cabinetProvider =
         Provider.of<CabinetProvider>(context, listen: false);
-    cabinetProvider.updateCabinetTask(task, isFutureTask: isFutureTask);
-
-    setState(() {});
+    setState(() {
+      cabinetProvider.updateCabinetTask(task, isFutureTask: isFutureTask);
+    });
   }
 }
