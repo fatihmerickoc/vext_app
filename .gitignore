@@ -137,3 +137,6 @@ app.*.symbols
 !/dev/ci/**/Gemfile.lock
 !.vscode/settings.json
 .DS_Store
+
+key.properties
+app/upload-keystore.jks
