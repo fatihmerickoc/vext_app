@@ -14,9 +14,8 @@ class Tasks extends StatefulWidget {
 
 class _TasksState extends State<Tasks> {
   Widget _taskContainer(TaskModel task, bool isFutureTask) {
-    bool isCompleted = task.task_completedDate == null;
     return Container(
-      height: 120,
+      height: 112,
       margin: const EdgeInsets.only(
         bottom: 10.0,
         top: 5.0,
@@ -29,6 +28,7 @@ class _TasksState extends State<Tasks> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
@@ -54,21 +54,16 @@ class _TasksState extends State<Tasks> {
                 ),
               ),
               Checkbox(
-                value: isCompleted,
-                activeColor: Styles.darkGreen,
-                onChanged: (value) async {
-                  setState(() {
-                    if (!value!) {
-                      task.task_completedDate = DateTime.now();
-                    } else {
-                      task.task_completedDate = null;
-                    }
-                  });
+                  value: task.task_isCompleted,
+                  activeColor: Styles.darkGreen,
+                  onChanged: (value) async {
+                    setState(() {
+                      task.task_isCompleted = value!;
+                    });
 
-                  await Future.delayed(const Duration(milliseconds: 750));
-                  _completeTask(task, isFutureTask);
-                },
-              ),
+                    await Future.delayed(const Duration(milliseconds: 750));
+                    _completeTask(task, isFutureTask);
+                  }),
             ],
           ),
           InkWell(
