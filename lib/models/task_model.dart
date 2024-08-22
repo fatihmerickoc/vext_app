@@ -8,7 +8,7 @@ class TaskModel {
   final String task_description;
   final DateTime task_createdAt;
   final DateTime task_dueDate;
-  final DateTime? task_completedDate; // completed date can be nullable
+  DateTime? task_completedDate; // completed date can be nullable
 
   TaskModel({
     required this.task_id,
