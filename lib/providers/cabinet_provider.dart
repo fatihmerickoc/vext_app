@@ -84,6 +84,7 @@ class CabinetProvider extends ChangeNotifier {
       await _cabinetService.setUncompleteTasks(task);
 
       _cabinet.cabinet_completedTasks!.remove(task);
+      task.task_isCompleted = false;
 
       if (task.task_dueDate.difference(DateTime.now()).inDays > 7) {
         _cabinet.cabinet_futureTasks!.add(task);

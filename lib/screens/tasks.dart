@@ -151,6 +151,7 @@ class _TasksState extends State<Tasks> {
                 style: Styles.drawer_text.copyWith(fontWeight: FontWeight.w500),
               ),
               Expanded(
+                flex: 2,
                 child: ListView.builder(
                   itemCount: cabinetProvider.cabinet.cabinet_tasks!.length,
                   itemBuilder: (context, index) {
