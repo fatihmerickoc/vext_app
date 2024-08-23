@@ -14,7 +14,7 @@ class TasksArchive extends StatefulWidget {
 class _TasksArchiveState extends State<TasksArchive> {
   Widget _taskContainer(TaskModel task) {
     return Container(
-      height: 100,
+      height: 112,
       margin: const EdgeInsets.only(
         bottom: 10.0,
         top: 5.0,
@@ -42,12 +42,23 @@ class _TasksArchiveState extends State<TasksArchive> {
               _taskDueText(task),
             ],
           ),
-          Text(
-            task.task_name,
-            style: const TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.w500,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                task.task_name,
+                style: const TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  _uncompleteTask(task, false);
+                },
+                icon: const Icon(Icons.undo_rounded),
+              )
+            ],
           ),
           InkWell(
             onTap: () => debugPrint(task.task_description),
@@ -135,5 +146,14 @@ class _TasksArchiveState extends State<TasksArchive> {
         ),
       ),
     );
+  }
+
+  Future<void> _uncompleteTask(TaskModel task, bool isFutureTask) async {
+    final cabinetProvider =
+        Provider.of<CabinetProvider>(context, listen: false);
+    print('testing');
+    setState(() {
+      cabinetProvider.updateCabinetTaskUncomplete(task);
+    });
   }
 }

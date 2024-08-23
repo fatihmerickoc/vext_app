@@ -306,6 +306,12 @@ class CabinetService {
         {'completed_date': DateTime.now().toString()}).eq('id', task.task_id);
   }
 
+  Future<void> setUncompleteTasks(TaskModel task) async {
+    await supabase
+        .from('tasks')
+        .update({'completed_date': null}).eq('id', task.task_id);
+  }
+
   //method that updates the plant stage values from Thingsboard
   Future<void> setPlantStage(String plantStage) async {
     try {

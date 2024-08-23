@@ -188,7 +188,8 @@ class _TasksState extends State<Tasks> {
     final cabinetProvider =
         Provider.of<CabinetProvider>(context, listen: false);
     setState(() {
-      cabinetProvider.updateCabinetTask(task, isFutureTask: isFutureTask);
+      cabinetProvider.updateCabinetTaskComplete(task,
+          isFutureTask: isFutureTask);
     });
   }
 }

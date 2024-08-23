@@ -61,7 +61,7 @@ class CabinetProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateCabinetTask(TaskModel task,
+  Future<void> updateCabinetTaskComplete(TaskModel task,
       {bool isFutureTask = false}) async {
     try {
       await _cabinetService.setCompleteTasks(task);
@@ -73,6 +73,24 @@ class CabinetProvider extends ChangeNotifier {
       }
 
       _cabinet.cabinet_completedTasks!.add(task);
+      notifyListeners();
+    } catch (e) {
+      print('Catched an error updating cabinet task: $e');
+    }
+  }
+
+  Future<void> updateCabinetTaskUncomplete(TaskModel task) async {
+    try {
+      await _cabinetService.setUncompleteTasks(task);
+
+      _cabinet.cabinet_completedTasks!.remove(task);
+
+      if (task.task_dueDate.difference(DateTime.now()).inDays > 7) {
+        _cabinet.cabinet_futureTasks!.add(task);
+      } else {
+        _cabinet.cabinet_tasks!.add(task);
+      }
+
       notifyListeners();
     } catch (e) {
       print('Catched an error updating cabinet task: $e');
