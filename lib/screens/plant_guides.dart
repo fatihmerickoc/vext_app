@@ -13,44 +13,44 @@ class PlantGuides extends StatefulWidget {
 class _PlantGuidesState extends State<PlantGuides> {
   //method to build each plant for the gridview list
   Widget _plantItem(String name, String image, int index) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PlantGuidesInfo(
+            plant: AppData().plantData[index],
+          ),
+        ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Hero(
-              tag: image,
-              child: Image.asset(
-                image,
-              ),
-            ),
-          ),
-          Text(
-            name,
-            style: Styles.body_text.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          GestureDetector(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PlantGuidesInfo(
-                  plant: AppData().plantData[index],
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Hero(
+                tag: image,
+                child: Image.asset(
+                  image,
                 ),
               ),
             ),
-            child: Text(
+            Text(
+              name,
+              style: Styles.body_text.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            Text(
               'Read more',
               style: Styles.subtitle_text.copyWith(fontWeight: FontWeight.w300),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
