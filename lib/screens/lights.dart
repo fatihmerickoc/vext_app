@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -111,6 +110,7 @@ class LightsState extends State<Lights> {
     return SliderTheme(
       data: SliderThemeData(
         trackHeight: 25,
+        tickMarkShape: SliderTickMarkShape.noTickMark,
         overlayShape: SliderComponentShape.noOverlay,
       ),
       child: Slider(
