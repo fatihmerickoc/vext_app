@@ -52,7 +52,15 @@ class _LoginAuthState extends State<LoginAuth> {
             Styles.height_20,
             _loginButton(),
             Styles.height_10,
-            _loginRegisterText()
+            _loginRegisterText(),
+            const Spacer(),
+            Text(
+              'Forgot your password?',
+              style: Styles.body_text.copyWith(
+                color: Styles.darkGreen,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ],
         ),
       ),
