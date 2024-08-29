@@ -178,11 +178,18 @@ class _HomeState extends State<Home> {
               ),
             ),
           );
-        } else {
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: LoadingAnimationWidget.bouncingBall(
               color: Styles.darkGreen,
               size: 200,
+            ),
+          );
+        } else {
+          return const Center(
+            child: Text(
+              'Error fetching data',
+              style: Styles.title_text,
             ),
           );
         }

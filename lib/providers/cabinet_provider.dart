@@ -25,14 +25,15 @@ class CabinetProvider extends ChangeNotifier {
 
   Future<CabinetModel?> fetchCabinet() async {
     try {
-      final fetchedCabinetData =
+      final CabinetModel? fetchedCabinetData =
           await _cabinetService.fetchDataForCabinetModel();
-      if (fetchedCabinetData != null) {
-        _cabinet = fetchedCabinetData;
+      if (fetchedCabinetData?.cabinet_idTB != '') {
+        print('Fetched cabinet data: $fetchedCabinetData');
+        _cabinet = fetchedCabinetData!;
         notifyListeners();
         return _cabinet;
       } else {
-        print("JSON value is empty");
+        print("Cabinet owner is not assigned");
       }
     } catch (e) {
       print('Catched an error fetching cabinet: $e');

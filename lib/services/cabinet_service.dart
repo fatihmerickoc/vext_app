@@ -34,9 +34,7 @@ class CabinetService {
     try {
       _cabinetModel.cabinet_owner = await _fetchOwnerInfo();
 
-      if (_cabinetModel.cabinet_owner?.owner_email == null) {
-        throw Exception('User has no cabinets that are assigned to him');
-      }
+      if (_cabinetModel.cabinet_owner?.owner_isAssigned == false) return null;
 
       Map<String, dynamic> value = {};
 
@@ -101,6 +99,7 @@ class CabinetService {
           );
 
       await _tbClient.logout();
+
       return {
         "cabinetName": device.data.first.name,
         'cabinetIdTB': device.data.first.id!.id,

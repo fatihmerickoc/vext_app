@@ -36,6 +36,7 @@ class _LoginAuthState extends State<LoginAuth> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Spacer(),
             const Text(
               "Hello Again!",
               style: TextStyle(
