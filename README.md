@@ -8,8 +8,17 @@ vext creates fridges for plants to grow in the most efficient way possible by pr
 - **to-do list**: keep track of tasks like cleaning the fridge or refilling the water tank.
 
 ## 📸 Screenshots
-coming soon....
-
+<div style="display: flex; flex-wrap: wrap;">
+  <img src="https://github.com/user-attachments/assets/12039585-8724-45ce-bc3b-daa3c1b8c502" alt="Screenshot 1" width="200" style="margin-right: 10px;">
+  <img src="https://github.com/user-attachments/assets/5164d43c-7ab5-4984-aa20-ad023bab97d2" alt="Screenshot 2" width="200" style="margin-right: 10px;">
+  <img src="https://github.com/user-attachments/assets/4435da73-951b-4eb1-ac39-cda1733dfdb3" alt="Screenshot 3" width="200" style="margin-right: 10px;">
+  <img src="https://github.com/user-attachments/assets/67355508-a8f5-4e92-b615-33ce619ef2ff" alt="Screenshot 4" width="200" style="margin-right: 10px;">
+  <img src="https://github.com/user-attachments/assets/b1e191b2-4660-48b6-bd67-1f953850ca49" alt="Screenshot 5" width="200" style="margin-right: 10px;">
+  <img src="https://github.com/user-attachments/assets/4083d59d-2573-44bd-b59c-eb99b079a1fc" alt="Screenshot 6" width="200" style="margin-right: 10px;">
+  <img src="https://github.com/user-attachments/assets/ae9b5c08-1d6a-42ec-b578-64cc3670887c" alt="Screenshot 7" width="200" style="margin-right: 10px;">
+  <img src="https://github.com/user-attachments/assets/c6ee260b-aaf1-4200-be18-cf0dc1be9d61" alt="Screenshot 8" width="200" style="margin-right: 10px;">
+  <img src="https://github.com/user-attachments/assets/dafa2be4-960f-4b21-835e-d639f5771c56" alt="Screenshot 9" width="200">
+</div>
 
 ## 🛠️ Getting Started
 ### Prerequisites
