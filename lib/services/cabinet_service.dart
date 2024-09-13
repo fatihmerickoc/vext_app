@@ -15,7 +15,7 @@ class CabinetService {
 
   CabinetModel _cabinetModel = CabinetModel();
 
-  final _tbClient = ThingsboardClient('https://thingsboard.vinicentus.net');
+  final _tbClient = ThingsboardClient('https://thingsboard.vext.fi');
 
   List<TaskModel> taskList = [];
   List<TaskModel> taskFutureList = [];
