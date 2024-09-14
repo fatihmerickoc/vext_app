@@ -37,7 +37,7 @@ this app fetches data from ThingsBoard using 2 methods:
 1. **clone this repo**:
 ```sh
 git clone https://github.com/fatihmerickoc/vext_app.git
-cd vext-fridge-app
+cd vext_app
 ```
 2. **install dependencies**
 ```sh
