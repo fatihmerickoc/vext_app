@@ -31,6 +31,7 @@ this app fetches data from ThingsBoard using 2 methods:
 ## 🛠️ Getting Started
 ### Prerequisites
 - Flutter SDK: [Install Flutter](https://docs.flutter.dev/get-started/install)
+- Supabase account & credentials 
 - Thingsboard account & credentials 
 
 ### Installation
