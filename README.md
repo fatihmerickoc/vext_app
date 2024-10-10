@@ -8,6 +8,13 @@ vext creates fridges for plants to grow in the most efficient way possible by pr
 - **planting guides**: get tips for planting various vegetables and fruits.
 - **to-do list**: keep track of tasks like cleaning the fridge or refilling the water tank.
 
+## 📱 Download the App
+you can download our app from your favorite store:
+
+[Download on Google Play](https://play.google.com/store/apps/details?id=fi.vext.vextapp&hl=en)
+
+[Download on the App Store](https://apps.apple.com/fi/app/vext/id6689519150?l=fi)
+
 ## 📸 Screenshots
 <div style="display: flex; flex-wrap: wrap;">
   <img src="https://github.com/user-attachments/assets/12039585-8724-45ce-bc3b-daa3c1b8c502" alt="Screenshot 1" width="200" style="margin-right: 10px; margin-bottom: 10px;">
